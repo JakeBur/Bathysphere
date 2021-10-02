@@ -10,10 +10,17 @@ namespace Battle
         void Select();
         void Deselect();
 
-        GameObject GetGameObject();
-
         bool IsSelectable();
     }
+
+    public static class SelectableExtentions
+    {
+        public static GameObject GetGameObject(this ISelectable selectable)
+        {
+            return (selectable as MonoBehaviour)?.gameObject;
+        }
+    }
+
 }
 
 

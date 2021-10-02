@@ -10,6 +10,8 @@ namespace Battle
         public static BattleGridManager Instance;
 
         public PriorityAction<GridSquare> OnSquareClicked;
+        public Action<GridSquare> OnSquareHovered;
+
         public GameObject squarePrefab;
 
         public List<Entity> entities;

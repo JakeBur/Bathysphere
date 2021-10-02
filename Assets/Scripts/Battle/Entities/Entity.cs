@@ -27,17 +27,12 @@ namespace Battle
 
         public void Select()
         {
-            Debug.Log("Selecting " + gameObject);
+
         }
 
         public void Deselect()
         {
 
-        }
-
-        public GameObject GetGameObject()
-        {
-            return gameObject;
         }
 
         public virtual bool IsSelectable()

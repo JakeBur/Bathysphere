@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Battle
 {
     public class TurnManager : MonoBehaviour
     {
         public static TurnManager Instance;
+
+        public Action<ITurnOrderEntry> OnTurnAdvance;
 
         public List<GameObject> turnOrderEntries;
 
@@ -43,6 +46,8 @@ namespace Battle
 
             // start the turn
             _turnOrder[0].StartTurn();
+
+            OnTurnAdvance?.Invoke(_turnOrder[0]);
         }
     }
 }
