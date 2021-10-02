@@ -7,11 +7,23 @@ namespace Battle
 {
     public abstract class Combatant : Entity, IBattleActor, IDamageable, ITurnOrderEntry
     {
+        public int health;
+
         protected Action OnTurnEnd;
+
+        ~Combatant()
+        {
+
+        }
 
         public void AddEndTurnListener(Action action)
         {
             OnTurnEnd += action;
+        }
+
+        public void AddRemovedFromPlayListener(Action<ITurnOrderEntry> action)
+        {
+            OnRemovedFromPlay += (Entity entity) => action?.Invoke(entity as ITurnOrderEntry);
         }
 
         public abstract List<IBattleAction> GetPrimedActions();
@@ -23,7 +35,21 @@ namespace Battle
 
         public abstract void StartTurn();
 
-        public abstract void TakeDamage();
+        public virtual void TakeDamage(int damage)
+        {
+            health -= damage;
+
+            if(health <= 0)
+            {
+                Die();
+            }
+        }
+
+        private void Die()
+        {
+            RemoveFromPlay();
+            Destroy(gameObject);
+        }
     }
 }
 

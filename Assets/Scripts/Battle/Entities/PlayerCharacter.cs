@@ -23,11 +23,6 @@ namespace Battle
             Debug.Log("Starting turn for player: " + gameObject);
         }
 
-        public override void TakeDamage()
-        {
-            Debug.Log("Player took damage");
-        }
-
         private class Move : IBattleAction
         {
             private PlayerCharacter player;
@@ -60,7 +55,7 @@ namespace Battle
 
             public void Apply(GridSquare gridSquare)
             {
-                gridSquare.entities.Find(entity => entity is IDamageable).GetComponent<IDamageable>().TakeDamage();
+                gridSquare.entities.Find(entity => entity is IDamageable).GetComponent<IDamageable>().TakeDamage(1);
                 player.OnTurnEnd?.Invoke();
             }
 

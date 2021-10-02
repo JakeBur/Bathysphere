@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Battle
 {
     public class Entity : MonoBehaviour, ISelectable
     {
+        public Action<Entity> OnRemovedFromPlay;
+
         public GridSquare Square
         {
             get
@@ -16,14 +19,22 @@ namespace Battle
             set
             {
                 if(_gridSquare) _gridSquare.RemoveEntity(this);
-                value.AddEntity(this);
                 _gridSquare = value;
 
-                transform.position = _gridSquare.transform.position;
+                if(_gridSquare != null)
+                {
+                    _gridSquare.AddEntity(this);
+                    transform.position = _gridSquare.transform.position;
+                }
             }
         }
 
         private GridSquare _gridSquare;
+
+        protected void RemoveFromPlay()
+        {
+            OnRemovedFromPlay?.Invoke(this);
+        }
 
         public void Select()
         {

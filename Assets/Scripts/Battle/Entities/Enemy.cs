@@ -16,11 +16,6 @@ namespace Battle
             Debug.Log("Starting enemy turn");
             Scheduler.Schedule(() => OnTurnEnd?.Invoke(), 2f);
         }
-
-        public override void TakeDamage()
-        {
-            Debug.Log("Enemy took damage");
-        }
     }
 }
 

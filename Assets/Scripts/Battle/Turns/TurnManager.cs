@@ -20,10 +20,12 @@ namespace Battle
             Instance = this;
 
             _turnOrder = new List<ITurnOrderEntry>();
-            turnOrderEntries.ForEach(entry =>
+            turnOrderEntries.ForEach(entryObject =>
             {
-                entry.GetComponent<ITurnOrderEntry>().AddEndTurnListener(AdvanceTurn);
-                _turnOrder.Add(entry.GetComponent<ITurnOrderEntry>());
+                ITurnOrderEntry entry = entryObject.GetComponent<ITurnOrderEntry>();
+                entry.AddEndTurnListener(AdvanceTurn);
+                entry.AddRemovedFromPlayListener(RemoveTurnOrderEntry);
+                _turnOrder.Add(entry);
             });
 
             _turnOrder[0].StartTurn();
@@ -32,6 +34,11 @@ namespace Battle
         public bool TurnOrderEntryIsActive(ITurnOrderEntry entry)
         {
             return _turnOrder[0] == entry;
+        }
+
+        private void RemoveTurnOrderEntry(ITurnOrderEntry entry)
+        {
+            _turnOrder.Remove(entry);
         }
 
         private void AdvanceTurn()

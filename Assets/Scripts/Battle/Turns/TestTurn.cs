@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Battle;
 using UnityEngine;
 
 public class TestTurn : MonoBehaviour, Battle.ITurnOrderEntry
@@ -38,5 +39,15 @@ public class TestTurn : MonoBehaviour, Battle.ITurnOrderEntry
                 OnTurnEnd?.Invoke();
             }
         }
+    }
+
+    public void AddRemovedFromPlayListener(Action<ITurnOrderEntry> action)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RemoveRemovedFromPlayListener(Action<ITurnOrderEntry> action)
+    {
+        throw new NotImplementedException();
     }
 }

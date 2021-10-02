@@ -10,6 +10,8 @@ namespace Battle
         void AddEndTurnListener(Action action);
         void RemoveEndTurnListener(Action action);
 
+        void AddRemovedFromPlayListener(Action<ITurnOrderEntry> action);
+
         void StartTurn();
     }
 
