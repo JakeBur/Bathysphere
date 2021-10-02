@@ -27,7 +27,7 @@ namespace Battle
 
         public void Select()
         {
-
+            Debug.Log("Selecting " + gameObject);
         }
 
         public void Deselect()

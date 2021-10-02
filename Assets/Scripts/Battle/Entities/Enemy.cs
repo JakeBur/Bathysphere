@@ -8,7 +8,13 @@ namespace Battle
     {
         public override List<IBattleAction> GetPrimedActions()
         {
-            return null;
+            return new List<IBattleAction>();
+        }
+
+        public override void StartTurn()
+        {
+            Debug.Log("Starting enemy turn");
+            Scheduler.Schedule(() => OnTurnEnd?.Invoke(), 2f);
         }
 
         public override void TakeDamage()

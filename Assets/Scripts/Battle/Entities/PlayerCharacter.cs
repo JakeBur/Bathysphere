@@ -9,11 +9,18 @@ namespace Battle
         public override List<IBattleAction> GetPrimedActions()
         {
             List<IBattleAction> actions = new List<IBattleAction>();
-
-            actions.Add(new Attack());
-            actions.Add(new Move(this));
+            if(this.TurnActive())
+            {
+                actions.Add(new Attack(this));
+                actions.Add(new Move(this));
+            }
 
             return actions;
+        }
+
+        public override void StartTurn()
+        {
+            Debug.Log("Starting turn for player: " + gameObject);
         }
 
         public override void TakeDamage()
@@ -23,16 +30,17 @@ namespace Battle
 
         private class Move : IBattleAction
         {
-            private Entity entity;
+            private PlayerCharacter player;
 
-            public Move(Entity entity)
+            public Move(PlayerCharacter player)
             {
-                this.entity = entity;
+                this.player = player;
             }
 
             public void Apply(GridSquare gridSquare)
             {
-                entity.Square = gridSquare;
+                player.Square = gridSquare;
+                player.OnTurnEnd?.Invoke();
             }
 
             public bool CanApplyToSquare(GridSquare gridSquare)
@@ -43,9 +51,17 @@ namespace Battle
 
         private class Attack : IBattleAction
         {
+            private PlayerCharacter player;
+
+            public Attack(PlayerCharacter player)
+            {
+                this.player = player;
+            }
+
             public void Apply(GridSquare gridSquare)
             {
                 gridSquare.entities.Find(entity => entity is IDamageable).GetComponent<IDamageable>().TakeDamage();
+                player.OnTurnEnd?.Invoke();
             }
 
             public bool CanApplyToSquare(GridSquare gridSquare)
