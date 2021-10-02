@@ -1,0 +1,33 @@
+{
+    "name": "InputActions",
+    "maps": [
+        {
+            "name": "Battle",
+            "id": "8a12ef88-5dc8-426f-852e-2ece52a5bb38",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "915fa336-a41e-4b59-9260-9b3e692e4122",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "98be41c5-2fed-46a8-a3f2-0ed6151eac43",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
