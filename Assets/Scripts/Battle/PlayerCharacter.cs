@@ -37,8 +37,7 @@ namespace Battle
 
             public bool CanApplyToSquare(GridSquare gridSquare)
             {
-                //TODO
-                return true;
+                return gridSquare.entities.Count == 0;
             }
         }
 
@@ -51,7 +50,9 @@ namespace Battle
 
             public bool CanApplyToSquare(GridSquare gridSquare)
             {
-                return gridSquare.entities.Find(entity => entity is IDamageable) != null;
+                Entity targetEntity = gridSquare.entities.Find(entity => entity is IDamageable);
+
+                return targetEntity is Enemy;
             }
         }
     }

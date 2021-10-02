@@ -41,6 +41,7 @@ namespace Battle
 
             entities[0].Square = grid.squares[0, 0];
             entities[1].Square = grid.squares[4, 4];
+            entities[2].Square = grid.squares[1, 4];
         }
 
         private void HandleClick(GridSquare gridSquare)
