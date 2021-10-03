@@ -5,34 +5,59 @@ using System;
 
 namespace Battle
 {
+    /// <summary>
+    /// A GridSquare a GameObject that contains Entities and has a position on the BattleGrid.
+    /// </summary>
     public class GridSquare : MonoBehaviour, IClickable
     {
+        /// <summary>
+        /// Invoked when this GridSquare is clicked on.
+        /// Supplies this GridSquare as an argument.
+        /// </summary>
         public Action<GridSquare> OnClick;
-        public BattleGrid battleGrid;
 
-        public List<Entity> entities;
+        /// <summary>
+        /// Reference to the BattleGrid that contains this GridSquare.
+        /// </summary>
+        public BattleGrid BattleGrid { get; private set; }
 
+        /// <summary>
+        /// List of Entities currently contained in this GridSquare.
+        /// </summary>
+        public List<Entity> Entities { get; private set; }
+
+        /// <summary>
+        /// The position on the BattleGrid of this GridSquare.
+        /// </summary>
         [HideInInspector]
-        public Vector2Int position;
+        public Vector2Int Position { get; private set; }
 
-        public int X { get => position.x; }
-        public int Y { get => position.y; }
+        public int X { get => Position.x; }
+        public int Y { get => Position.y; }
 
         public void Click()
         {
             OnClick?.Invoke(this);
         }
 
+        /// <summary>
+        /// Adds an Entity to this GridSquare.
+        /// </summary>
+        /// <param name="entity">The Entity to add.</param>
         public void AddEntity(Entity entity)
         {
-            entities.Add(entity);
+            Entities.Add(entity);
         }
 
+        /// <summary>
+        /// Removes an Entity from this GridSquare.
+        /// </summary>
+        /// <param name="entity">The Entity to remove.</param>
         public void RemoveEntity(Entity entity)
         {
-            if(entities.Contains(entity))
+            if(Entities.Contains(entity))
             {
-                entities.Remove(entity);
+                Entities.Remove(entity);
             }
             else
             {
@@ -40,9 +65,16 @@ namespace Battle
             }
         }
 
-        public void SetPosition(int x, int y)
+        /// <summary>
+        /// Binds this GridSquare to a specific position on the given grid.
+        /// </summary>
+        /// <param name="grid">The BattleGrid to bind to.</param>
+        /// <param name="x">Horizontal position.</param>
+        /// <param name="y">Vertical position.</param>
+        public void BindToGrid(BattleGrid grid, int x, int y)
         {
-            position = new Vector2Int(x, y);
+            this.BattleGrid = grid;
+            Position = new Vector2Int(x, y);
         }
     }
 }

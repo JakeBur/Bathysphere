@@ -25,7 +25,7 @@ namespace Battle
 
         private void HandleSelect(ISelectable selectable)
         {
-            _followTarget = selectable.GetGameObject().transform;
+            _followTarget = selectable.TryGetGameObject().transform;
             icon.SetActive(true);
         }
     }

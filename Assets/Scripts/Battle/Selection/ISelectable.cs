@@ -5,6 +5,9 @@ using System;
 
 namespace Battle
 {
+    /// <summary>
+    /// A selectable is any object that can be selected by the player.
+    /// </summary>
     public interface ISelectable
     {
         void Select();
@@ -15,7 +18,10 @@ namespace Battle
 
     public static class SelectableExtentions
     {
-        public static GameObject GetGameObject(this ISelectable selectable)
+        /// <summary>
+        /// Gets the GameObject this ISelectable is attached to, or null if the ISelectable is not a MonoBehavior.
+        /// </summary>
+        public static GameObject TryGetGameObject(this ISelectable selectable)
         {
             return (selectable as MonoBehaviour)?.gameObject;
         }

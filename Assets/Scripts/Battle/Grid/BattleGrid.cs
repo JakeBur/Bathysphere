@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Battle
 {
+    /// <summary>
+    /// A BattleGrid maintains a spatial relationship between a series of GridSquares using a 2D array. 
+    /// </summary>
     public class BattleGrid
     {
         public GridSquare[,] squares;
@@ -19,8 +22,7 @@ namespace Battle
             set
             {
                 squares[x, y] = value;
-                value.battleGrid = this;
-                value.SetPosition(x, y);
+                value.BindToGrid(this, x, y);
             }
         }
     }

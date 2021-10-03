@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Battle
 {
+    /// <summary>
+    /// An Enemy is an AI controled Combatant hostile to the player.
+    /// </summary>
     public class Enemy : Combatant
     {
         public override List<IBattleAction> GetPrimedActions()

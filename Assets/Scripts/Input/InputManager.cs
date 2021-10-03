@@ -7,23 +7,33 @@ using System.Linq;
 
 namespace Battle
 {
+    /// <summary>
+    /// A Battle.InputManager is an input handler for player input during battle.
+    /// </summary>
     public class InputManager : MonoBehaviour
     {
         public static InputManager Instance;
 
-        private InputActions inputActions;
+        /// <summary>
+        /// Reference to the Unity InputActions object that will dispurse input events to the InputManager.
+        /// </summary>
+        private InputActions _inputActions;
 
+        /// <summary>
+        /// Invoked when any GridSquare is being hovered over this frame.
+        /// Supplies the hovered GridSquare as an argument.
+        /// </summary>
         public Action<GridSquare> OnHoverGridSquare;
 
         private void Awake()
         {
             Instance = this;
 
-            inputActions = new InputActions();
+            _inputActions = new InputActions();
 
-            inputActions.Enable();
+            _inputActions.Enable();
 
-            inputActions.Battle.Select.started += OnClick;
+            _inputActions.Battle.Select.started += HandleClick;
         }
 
         private void Update()
@@ -37,7 +47,11 @@ namespace Battle
             }
         }
 
-        private void OnClick(InputAction.CallbackContext context)
+        /// <summary>
+        /// Handler for when the player clicks the mouse.
+        /// </summary>
+        /// <param name="context">Context supplied by the Unity Input System.</param>
+        private void HandleClick(InputAction.CallbackContext context)
         {
             foreach (IClickable clickable in GetHoveredClickables())
             {
@@ -45,6 +59,10 @@ namespace Battle
             }
         }
 
+        /// <summary>
+        /// Gets an array of all clickables on the object currently hovered over by the mouse.
+        /// </summary>
+        /// <returns>An array of IClickables currently hovered over by the player's mouse.</returns>
         private IClickable[] GetHoveredClickables()
         {
             Vector2 screenPoint = Mouse.current.position.ReadValue();
