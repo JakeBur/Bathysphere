@@ -24,8 +24,6 @@ namespace Battle
             menuActions = new List<IBattleAction>();
 
             menuActions.Add(new Attack(this));
-            menuActions.Add(new Attack(this));
-
         }
 
         private void Start()

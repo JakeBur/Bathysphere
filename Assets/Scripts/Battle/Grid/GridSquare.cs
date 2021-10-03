@@ -19,7 +19,7 @@ namespace Battle
         /// <summary>
         /// Reference to the BattleGrid that contains this GridSquare.
         /// </summary>
-        public BattleGrid BattleGrid { get; private set; }
+        public BattleGrid Grid { get; private set; }
 
         /// <summary>
         /// List of Entities currently contained in this GridSquare.
@@ -78,8 +78,25 @@ namespace Battle
         /// <param name="y">Vertical position.</param>
         public void BindToGrid(BattleGrid grid, int x, int y)
         {
-            this.BattleGrid = grid;
+            this.Grid = grid;
             Position = new Vector2Int(x, y);
+        }
+
+        public bool IsPassable()
+        {
+            return Entities.Count == 0;
+        }
+
+        public List<GridSquare> GetNeighbors()
+        {
+            List<GridSquare> neighbors = new List<GridSquare>();
+
+            if (Grid.HasIndex(X + 1, Y)) neighbors.Add(Grid[X + 1, Y]);
+            if (Grid.HasIndex(X - 1, Y)) neighbors.Add(Grid[X - 1, Y]);
+            if (Grid.HasIndex(X, Y + 1)) neighbors.Add(Grid[X, Y + 1]);
+            if (Grid.HasIndex(X, Y - 1)) neighbors.Add(Grid[X, Y - 1]);
+
+            return neighbors;
         }
     }
 }

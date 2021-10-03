@@ -64,6 +64,8 @@ namespace Battle
             entities[2].Square = _grid.squares[1, 4];
         }
 
+        
+
         private void HandleClick(GridSquare gridSquare)
         {
             OnSquareClicked?.Invoke(gridSquare);

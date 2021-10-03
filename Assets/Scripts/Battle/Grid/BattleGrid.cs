@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 namespace Battle
 {
+    // TODO: using linq is slow, if there are performance issues, factor it out
     /// <summary>
     /// A BattleGrid maintains a spatial relationship between a series of GridSquares using a 2D array. 
     /// </summary>
@@ -24,6 +27,166 @@ namespace Battle
                 squares[x, y] = value;
                 value.BindToGrid(this, x, y);
             }
+        }
+
+        /// <summary>
+        /// Uses A* to find the shortest unblocked path between start and goal.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="goal"></param>
+        /// <returns></returns>
+        public List<GridSquare> CalculatePath(GridSquare start, GridSquare goal)
+        {
+            if (!Contains(start))
+            {
+                Debug.LogError($"Failed to calculate BattleGrid path, GridSquare from: {start} is not on the grid.");
+                return null;
+            }
+
+            if (!Contains(goal))
+            {
+                Debug.LogError($"Failed to calculate BattleGrid path, GridSquare from: {goal} is not on the grid.");
+                return null;
+            }
+
+            // instantiate all nodes
+            List<PathNode> pathNodes = new List<PathNode>();
+
+            foreach(GridSquare square in squares)
+            {
+                if(square.IsPassable() || square == start || square == goal) pathNodes.Add(new PathNode(square, goal));
+            }
+
+            pathNodes.ForEach(node => node.CalculateNeighbors(pathNodes));
+
+            // create the open set
+            List<PathNode> openSet = new List<PathNode>();
+
+            // configure start node
+            PathNode startNode = pathNodes.Find(node => node.gridSquare == start);
+
+            openSet.Add(startNode);
+            startNode.gScore = 0;
+            startNode.fScore = Heuristic(start, goal);
+
+            while (openSet.Count > 0)
+            {
+                PathNode current = openSet.Min();
+                if(current.gridSquare == goal)
+                {
+                    List<PathNode> nodePath = new List<PathNode>();
+                    nodePath.Add(current);
+
+                    PathNode previous = current.previous;
+
+                    while (previous != null)
+                    {
+                        nodePath.Add(previous);
+                        previous = previous.previous;
+                    }
+
+                    List<GridSquare> finalPath = new List<GridSquare>();
+
+                    for(int i = nodePath.Count - 1; i >= 0; i--)
+                    {
+                        finalPath.Add(nodePath[i].gridSquare);
+                    }
+
+                    return finalPath;
+                }
+
+                openSet.Remove(current);
+
+                foreach(PathNode neighbor in current.neighbors)
+                {
+                    if(current.gScore + 1 < neighbor.gScore)
+                    {
+                        neighbor.previous = current;
+                        neighbor.gScore = current.gScore + 1;
+                        neighbor.fScore = neighbor.gScore + Heuristic(neighbor.gridSquare, goal);
+                        if(!openSet.Contains(neighbor))
+                        {
+                            openSet.Add(neighbor);
+                        }
+                    }
+                }
+            }
+
+            Debug.LogWarning("no path found");
+            return null;
+        }
+
+        private class PathNode : IComparable<PathNode>
+        {
+            public PathNode previous;
+            public List<PathNode> neighbors;
+            public GridSquare gridSquare;
+
+            /// <summary>
+            /// Cost of the cheapest path from start to this node currently known 
+            /// </summary>
+            public int gScore;
+
+            /// <summary>
+            /// Estimated cost of path that runs from start, passes through this node, and reaches the goal
+            /// </summary>
+            public int fScore;
+
+            public PathNode(GridSquare current, GridSquare goal)
+            {
+                gridSquare = current;
+                previous = null;
+                gScore = int.MaxValue;
+                fScore = int.MaxValue;
+            }
+
+            public int CompareTo(PathNode other)
+            {
+                return fScore - other.fScore;
+            }
+
+            //TODO: Hack with bad performance, target later if there are issues
+            public void CalculateNeighbors(List<PathNode> pathNodes)
+            {
+                neighbors = new List<PathNode>();
+                gridSquare.GetNeighbors().ForEach(gridSquare =>
+                {
+                    PathNode found = pathNodes.Find(node => node.gridSquare == gridSquare);
+                    if(found != null)
+                    {
+                        neighbors.Add(found);
+                    }
+                });
+            }
+        }
+
+
+        private static int Heuristic(GridSquare start, GridSquare goal)
+        {
+            return Mathf.Abs(start.X - goal.X) + (start.Y - goal.Y);
+        }
+
+        /// <summary>
+        /// Checks if the given GridSquare is somewhere in this BattleGrid.
+        /// </summary>
+        /// <param name="testSquare">The GridSquare to check for.</param>
+        /// <returns>True if the GridSquare is found, false otherwise.</returns>
+        public bool Contains(GridSquare testSquare)
+        {
+            foreach (GridSquare square in squares)
+            { 
+                if (square == testSquare)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool HasIndex(int x, int y)
+        {
+            return x >= 0 && x < squares.GetLength(0) && y >= 0 && y < squares.GetLength(1);
         }
     }
 }
