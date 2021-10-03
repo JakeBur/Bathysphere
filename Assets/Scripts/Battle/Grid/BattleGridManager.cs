@@ -13,7 +13,7 @@ namespace Battle
         public static BattleGridManager Instance;
 
         public GameObject squarePrefab;
-        public List<Entity> entities;
+        private List<Entity> _entities;
 
         /// <summary>
         /// Invoked when any GridSquare on the BattleGrid is clicked.
@@ -30,45 +30,52 @@ namespace Battle
         /// <summary>
         /// The BattleGrid this BattleGridManager uses to track entities and their spatial relationships.
         /// </summary>
-        [HideInInspector]
-        private BattleGrid _grid;
+        public BattleGrid Grid { get; private set; }
 
         private void Awake()
         {
             Instance = this;
+            _entities = new List<Entity>();
             OnSquareClicked = new PriorityEvent<GridSquare>();
 
-            _grid = new BattleGrid(5, 5);
+            Grid = new BattleGrid(5, 5);
 
             // populate the grid with squares
-            for(int x = 0; x < _grid.squares.GetLength(0); x++)
+            for(int x = 0; x < Grid.squares.GetLength(0); x++)
             {
-                for (int y = 0; y < _grid.squares.GetLength(0); y++)
+                for (int y = 0; y < Grid.squares.GetLength(0); y++)
                 {
                     GameObject square = Instantiate(squarePrefab, transform);
                     square.transform.localPosition = new Vector3(x, 0, y);
 
                     GridSquare gridSquare = square.GetComponent<GridSquare>();
 
-                    _grid[x, y] = square.GetComponent<GridSquare>();
+                    Grid[x, y] = square.GetComponent<GridSquare>();
 
                     gridSquare.OnClick += HandleClick;
                 }
             }
 
-            // TODO: temporary manual placement of entities for testing
-            entities.ForEach(entity => entity.OnRemovedFromPlay += RemoveEntity);
-
-            entities[0].Square = _grid.squares[0, 0];
-            entities[1].Square = _grid.squares[4, 4];
-            entities[2].Square = _grid.squares[1, 4];
+            
         }
-
-        
 
         private void HandleClick(GridSquare gridSquare)
         {
             OnSquareClicked?.Invoke(gridSquare);
+        }
+
+        /// <summary>
+        /// Adds the given entity to the BattleGrid at the given location.
+        /// </summary>
+        /// <param name="entity">The entity to add.</param>
+        /// <param name="x">X position the Entity should be placed at.</param>
+        /// <param name="y">Y position the Entity should be placed at.</param>
+        public void AddEntity(Entity entity, int x, int y)
+        {
+            _entities.Add(entity);
+            entity.OnRemovedFromPlay += RemoveEntity;
+
+            entity.Square = Grid[x, y];
         }
 
         /// <summary>
@@ -77,7 +84,7 @@ namespace Battle
         /// <param name="entity">The Entity to remove.</param>
         private void RemoveEntity(Entity entity)
         {
-            entities.Remove(entity);
+            _entities.Remove(entity);
             entity.Square = null;
         }
     }

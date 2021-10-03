@@ -23,7 +23,7 @@ namespace Battle
         {
             menuActions = new List<IBattleAction>();
 
-            menuActions.Add(new Attack(this));
+            menuActions.Add(new TestAttack(this));
         }
 
         private void Start()
@@ -89,11 +89,11 @@ namespace Battle
             }
         }
 
-        private class Attack : IBattleAction
+        private class TestAttack : IBattleAction
         {
             private PlayerCharacter player;
 
-            public Attack(PlayerCharacter player)
+            public TestAttack(PlayerCharacter player)
             {
                 this.player = player;
             }

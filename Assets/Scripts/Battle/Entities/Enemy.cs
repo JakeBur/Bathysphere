@@ -45,7 +45,6 @@ namespace Battle
                 }
             }
 
-            Debug.Log(bestIndex);
             GameObject targetMarker = Instantiate(targetMarkerPrefab);
             targetMarker.transform.position = targets[bestIndex].transform.position;
 

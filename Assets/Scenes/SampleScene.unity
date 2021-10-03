@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b936579488c6445978cfb6f658c4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 5
+  health: 2
 --- !u!1 &585267409
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,10 +429,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   squarePrefab: {fileID: 147305157555821520, guid: 57c0ac3f58d3f7b4288ce2a56f6958f7,
     type: 3}
-  entities:
-  - {fileID: 266949841}
-  - {fileID: 1973048372}
-  - {fileID: 1280324943}
 --- !u!4 &611170319
 Transform:
   m_ObjectHideFlags: 0
@@ -1069,7 +1065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b936579488c6445978cfb6f658c4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 5
+  health: 2
 --- !u!4 &1280324944
 Transform:
   m_ObjectHideFlags: 0
@@ -1275,6 +1271,53 @@ Transform:
   - {fileID: 2123926940}
   m_Father: {fileID: 0}
   m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1477123584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1477123586}
+  - component: {fileID: 1477123585}
+  m_Layer: 0
+  m_Name: Battle Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1477123585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477123584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac4ebacf974f6c747b871e2edb5a19ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entities:
+  - {fileID: 266949841}
+  - {fileID: 1973048372}
+  - {fileID: 1280324943}
+--- !u!4 &1477123586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477123584}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.044113874, y: 0.42876744, z: 1.6550493}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1606059790
 GameObject:
