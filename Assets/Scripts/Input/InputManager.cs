@@ -25,6 +25,11 @@ namespace Battle
         /// </summary>
         public Action<GridSquare> OnHoverGridSquare;
 
+        /// <summary>
+        /// Invoked when the player presses the cancel button.
+        /// </summary>
+        public Action OnCancelPressed;
+
         private void Awake()
         {
             Instance = this;
@@ -34,6 +39,7 @@ namespace Battle
             _inputActions.Enable();
 
             _inputActions.Battle.Select.started += HandleClick;
+            _inputActions.Battle.Cancel.started += (InputAction.CallbackContext context) => OnCancelPressed?.Invoke();
         }
 
         private void Update()

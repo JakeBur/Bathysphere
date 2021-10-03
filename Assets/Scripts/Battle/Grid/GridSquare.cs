@@ -35,6 +35,11 @@ namespace Battle
         public int X { get => Position.x; }
         public int Y { get => Position.y; }
 
+        private void Awake()
+        {
+            Entities = new List<Entity>();
+        }
+
         public void Click()
         {
             OnClick?.Invoke(this);
