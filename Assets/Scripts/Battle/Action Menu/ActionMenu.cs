@@ -9,6 +9,7 @@ namespace Battle
     public class ActionMenu : MonoBehaviour
     {
         public Canvas canvas;
+        public RectTransform buttonContainer;
         public GameObject buttonPrefab;
         public float buttonSpacing;
         public float buttonYOffset;
@@ -52,14 +53,14 @@ namespace Battle
 
                     foreach(IBattleAction battleAction in playerCharacter.menuActions)
                     {
-                        Button button = Instantiate(buttonPrefab, canvas.transform).GetComponent<Button>();
+                        Button button = Instantiate(buttonPrefab, buttonContainer).GetComponent<Button>();
                         button.GetComponentInChildren<TextMeshProUGUI>().text = battleAction.ToString();
                         
                         RectTransform buttonTransform = button.GetComponent<RectTransform>();
                        
-                        buttonTransform.anchoredPosition = new Vector2(
+                        /*buttonTransform.anchoredPosition = new Vector2(
                             buttonTransform.anchoredPosition.x,
-                            buttonYOffset + (buttonCount * buttonSpacing) + buttonTransform.sizeDelta.y);
+                            buttonYOffset + (buttonCount * buttonSpacing) + buttonTransform.sizeDelta.y);*/
 
                         button.onClick.AddListener(() => HandleActionButtonPressed(battleAction));
 

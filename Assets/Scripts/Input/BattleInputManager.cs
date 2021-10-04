@@ -10,9 +10,9 @@ namespace Battle
     /// <summary>
     /// A Battle.InputManager is an input handler for player input during battle.
     /// </summary>
-    public class InputManager : MonoBehaviour
+    public class BattleInputManager : MonoBehaviour
     {
-        public static InputManager Instance;
+        public static BattleInputManager Instance;
 
         /// <summary>
         /// Reference to the Unity InputActions object that will dispurse input events to the InputManager.

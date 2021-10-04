@@ -91,10 +91,10 @@ namespace Battle
         {
             List<GridSquare> neighbors = new List<GridSquare>();
 
-            if (Grid.HasIndex(X + 1, Y)) neighbors.Add(Grid[X + 1, Y]);
-            if (Grid.HasIndex(X - 1, Y)) neighbors.Add(Grid[X - 1, Y]);
-            if (Grid.HasIndex(X, Y + 1)) neighbors.Add(Grid[X, Y + 1]);
-            if (Grid.HasIndex(X, Y - 1)) neighbors.Add(Grid[X, Y - 1]);
+            if (Grid.HasPosition(X + 1, Y)) neighbors.Add(Grid[X + 1, Y]);
+            if (Grid.HasPosition(X - 1, Y)) neighbors.Add(Grid[X - 1, Y]);
+            if (Grid.HasPosition(X, Y + 1)) neighbors.Add(Grid[X, Y + 1]);
+            if (Grid.HasPosition(X, Y - 1)) neighbors.Add(Grid[X, Y - 1]);
 
             return neighbors;
         }

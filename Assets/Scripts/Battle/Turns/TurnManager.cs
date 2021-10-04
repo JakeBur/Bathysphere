@@ -18,9 +18,6 @@ namespace Battle
         /// </summary>
         public Action<ITurnOrderEntry> OnTurnAdvance;
 
-        //TODO: Temporary manually generated list for testing
-        public List<GameObject> turnOrderEntries;
-
         /// <summary>
         /// Tracker for the ordering of ITurnOrderEntries.
         /// Is used like a cyclical queue, with the current turn stored in the 0th element.
@@ -30,22 +27,30 @@ namespace Battle
         private void Awake()
         {
             Instance = this;
-
             _turnOrder = new List<ITurnOrderEntry>();
-            turnOrderEntries.ForEach(entryObject =>
-            {
-                ITurnOrderEntry entry = entryObject.GetComponent<ITurnOrderEntry>();
+        }
 
-                // listen for when the entry yields game state control back to us
-                entry.AddEndTurnListener(AdvanceTurn);
-
-                // listen for when the entry is removed from play so that we don't continue to try to execute it.
-                entry.AddRemovedFromPlayListener(RemoveTurnOrderEntry);
-
-                _turnOrder.Add(entry);
-            });
-
+        /// <summary>
+        /// Starts the turn of the fist ITurnOrderEntry in the order.
+        /// </summary>
+        public void StartTurnOrder()
+        {
             _turnOrder[0].StartTurn();
+        }
+
+        /// <summary>
+        /// Adds the given ITurnOrderEntry to the turn order.
+        /// </summary>
+        /// <param name="entry">The ITurnOrderEntry to add.</param>
+        public void AddTurnOrderEntry(ITurnOrderEntry entry)
+        {
+            // listen for when the entry yields game state control back to us
+            entry.AddEndTurnListener(AdvanceTurn);
+
+            // listen for when the entry is removed from play so that we don't continue to try to execute it.
+            entry.AddRemovedFromPlayListener(RemoveTurnOrderEntry);
+
+            _turnOrder.Add(entry);
         }
 
         /// <summary>

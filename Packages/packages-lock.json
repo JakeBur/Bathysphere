@@ -105,7 +105,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ui.builder": {
-      "version": "1.0.0-preview.6",
+      "version": "1.0.0-preview.17",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

@@ -9,7 +9,7 @@ namespace Battle
         // Start is called before the first frame update
         void Start()
         {
-            InputManager.Instance.OnHoverGridSquare += UpdateHoverTarget;
+            BattleInputManager.Instance.OnHoverGridSquare += UpdateHoverTarget;
         }
 
         private void UpdateHoverTarget(GridSquare gridSquare)

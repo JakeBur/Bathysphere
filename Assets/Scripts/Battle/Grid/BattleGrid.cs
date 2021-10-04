@@ -14,6 +14,21 @@ namespace Battle
     {
         public GridSquare[,] squares;
 
+        /// <summary>
+        /// Size, in squares, of this BattleGrid.
+        /// </summary>
+        public Vector2Int Size => new Vector2Int(squares.GetLength(0), squares.GetLength(1));
+
+        /// <summary>
+        /// Width, in squares, of this BattleGrid.
+        /// </summary>
+        public int Width => squares.GetLength(0);
+
+        /// <summary>
+        /// Height, in squares, of this BattleGrid.
+        /// </summary>
+        public int Height => squares.GetLength(1);
+
         public BattleGrid(int width, int height)
         {
             squares = new GridSquare[width, height];
@@ -27,6 +42,30 @@ namespace Battle
                 squares[x, y] = value;
                 value.BindToGrid(this, x, y);
             }
+        }
+
+        public void DestroyImmediate()
+        {
+            foreach(GridSquare square in squares)
+            {
+                if(square) GameObject.DestroyImmediate(square.gameObject);
+            }
+        }
+
+        /// <summary>
+        /// Searches all GridSquares for entities and collects them in a List.
+        /// </summary>
+        /// <returns>A List of all Entities stored in the GridSquares of this Grid.</returns>
+        public List<Entity> FindEntities()
+        {
+            List<Entity> entities = new List<Entity>();
+
+            foreach(GridSquare square in squares)
+            {
+                entities.AddRange(square.Entities);
+            }
+
+            return entities;
         }
 
         /// <summary>
@@ -184,7 +223,23 @@ namespace Battle
             return false;
         }
 
-        public bool HasIndex(int x, int y)
+        /// <summary>
+        /// Checks whether the given position is within the bounds of this BattleGrid.
+        /// </summary>
+        /// <param name="position">The position to check.</param>
+        /// <returns>True if the given position is in bounds, false otherwise.</returns>
+        public bool HasPosition(Vector2Int position)
+        {
+            return HasPosition(position.x, position.y);
+        }
+
+        /// <summary>
+        /// Checks whether the given position is within the bounds of this BattleGrid.
+        /// </summary>
+        /// <param name="x">X component of the position to check.</param>
+        /// <param name="y">Y component of the position to check.</param>
+        /// <returns>True if the given position is in bounds, false otherwise.</returns>
+        public bool HasPosition(int x, int y)
         {
             return x >= 0 && x < squares.GetLength(0) && y >= 0 && y < squares.GetLength(1);
         }

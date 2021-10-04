@@ -21,6 +21,17 @@ namespace Battle
         /// </summary>
         public PriorityEvent<GridSquare> OnSquareClicked;
 
+        public void UpdateSize(Vector2Int size)
+        {
+            UpdateSize(size.x, size.y);
+        }
+
+        public void UpdateSize(int x, int y)
+        {
+            if(Grid != null) Grid.DestroyImmediate();
+            InstantiateGrid(x, y);
+        }
+
         /// <summary>
         /// Invoked when any GridSquare on the BattleGrid is hovered over.
         /// Supplies the hovered GridSquare as an argument.
@@ -37,13 +48,21 @@ namespace Battle
             Instance = this;
             _entities = new List<Entity>();
             OnSquareClicked = new PriorityEvent<GridSquare>();
+        }
 
-            Grid = new BattleGrid(5, 5);
+        public void InstantiateGrid(Vector2Int size)
+        {
+            InstantiateGrid(size.x, size.y);
+        }
+
+        public void InstantiateGrid(int width, int height)
+        {
+            Grid = new BattleGrid(width, height);
 
             // populate the grid with squares
-            for(int x = 0; x < Grid.squares.GetLength(0); x++)
+            for (int x = 0; x < Grid.squares.GetLength(0); x++)
             {
-                for (int y = 0; y < Grid.squares.GetLength(0); y++)
+                for (int y = 0; y < Grid.squares.GetLength(1); y++)
                 {
                     GameObject square = Instantiate(squarePrefab, transform);
                     square.transform.localPosition = new Vector3(x, 0, y);
@@ -55,8 +74,6 @@ namespace Battle
                     gridSquare.OnClick += HandleClick;
                 }
             }
-
-            
         }
 
         private void HandleClick(GridSquare gridSquare)

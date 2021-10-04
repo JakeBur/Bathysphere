@@ -9,6 +9,8 @@ namespace Battle
     /// </summary>
     public class PlayerCharacter : Combatant
     {
+        public EncounterEntity test;
+
         /// <summary>
         /// List of actions that should appear in the contextual action menu when this PlayerCharacter is selected.
         /// </summary>
@@ -24,11 +26,13 @@ namespace Battle
             menuActions = new List<IBattleAction>();
 
             menuActions.Add(new TestAttack(this));
+            menuActions.Add(new TestAttack(this));
+            menuActions.Add(new TestAttack(this));
         }
 
         private void Start()
         {
-            InputManager.Instance.OnCancelPressed += Cancel;
+            BattleInputManager.Instance.OnCancelPressed += Cancel;
         }
 
         public override List<IBattleAction> GetPrimedActions()
