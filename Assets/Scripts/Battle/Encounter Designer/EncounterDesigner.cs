@@ -75,7 +75,7 @@ namespace Battle
         {
             EncounterEntity draggedEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
 
-            if(draggedEntity != null)
+            if(draggedEntity != null && encounter.entities.Contains(draggedEntity))
             {
                 EditorUtility.SetDirty(draggedEntity);
 

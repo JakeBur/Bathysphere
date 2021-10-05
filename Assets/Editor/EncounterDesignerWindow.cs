@@ -10,6 +10,7 @@ using Battle;
 public class EncounterDesignerWindow : EditorWindow
 {
     private static Encounter selectedEncounter;
+    private static ListView entityList;
 
     [MenuItem("Tools/Encounter Designer")]
     public static void ShowWindow()
@@ -49,7 +50,6 @@ public class EncounterDesignerWindow : EditorWindow
 
         encounterList.onSelectionChange += (enumerable) =>
         {
-            Debug.Log(enumerable.Count());
             foreach(Object it in enumerable)
             {
                 BuildEncounterInfoBox(it as Encounter);
@@ -74,7 +74,7 @@ public class EncounterDesignerWindow : EditorWindow
         gridSizeBox.Add(gridSizeField);
 
         // Entity list
-        ListView entityList = rootVisualElement.Query<ListView>("entity-list").First();
+        entityList = rootVisualElement.Query<ListView>("entity-list").First();
         entityList.makeItem = BuildEntityListing;
         entityList.bindItem = (element, i) =>
         {
@@ -121,8 +121,6 @@ public class EncounterDesignerWindow : EditorWindow
 
         if (entityData != null)
         {
-            //AssetDatabase.CreateAsset
-
             string encounterPath = MovePathUpOneLevel(AssetDatabase.GetAssetPath(selectedEncounter));
             Debug.Log(encounterPath);
 
@@ -151,7 +149,8 @@ public class EncounterDesignerWindow : EditorWindow
             AssetDatabase.CreateAsset(createdEncounterEntity, assetPath + postfix + ".asset");
 
             selectedEncounter.entities.Add(createdEncounterEntity);
-            Debug.Log(selectedEncounter);
+
+            entityList.Refresh();
         }
     }
 
