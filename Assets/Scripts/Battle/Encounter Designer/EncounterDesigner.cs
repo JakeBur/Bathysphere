@@ -60,6 +60,7 @@ namespace Battle
             encounter.entities.ForEach(entity =>
             {
                 GameObject worldEntity = Instantiate(entity.entityData.prefab);
+                Debug.Log(entity.position);
                 worldEntity.transform.position = battleGridManager.Grid.squares[entity.position.x, entity.position.y].transform.position;
                 worldObjects.Add(entity, worldEntity);
             });
