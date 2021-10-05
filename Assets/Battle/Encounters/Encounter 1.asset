@@ -14,30 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: {x: 10, y: 4}
   entities:
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: -6527069497977903076, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: 1169890249420208065, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: 4561253339802451974, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: -1087164816274819069, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: -1304905567622442630, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: 10910, guid: 0000000000000000f000000000000000, type: 0}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: 4154780841294389669, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}
-  - prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: 4456449167576933126, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}
+  - entityData: {fileID: 11400000, guid: 542899b59d7ddef42ad8cb6121329b92, type: 2}
+    position: {x: 1, y: 0}
+  - entityData: {fileID: 11400000, guid: 542899b59d7ddef42ad8cb6121329b92, type: 2}
+    position: {x: 0, y: 2}
+  - entityData: {fileID: 11400000, guid: 542899b59d7ddef42ad8cb6121329b92, type: 2}
+    position: {x: 3, y: 0}

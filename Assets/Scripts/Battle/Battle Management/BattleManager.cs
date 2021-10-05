@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Battle
 {
@@ -30,9 +31,9 @@ namespace Battle
             TurnManager.Instance.StartTurnOrder();*/
             BattleGridManager.Instance.InstantiateGrid(encounter.gridSize);
 
-            foreach(EncounterEntity encounterEntity in encounter.entities)
+            foreach(EncounterEntity encounterEntity in encounter.entities)//.Select(container => container.encounterEntity)
             {
-                GameObject createdEntityObject = Instantiate(encounterEntity.prefab);
+                GameObject createdEntityObject = Instantiate(encounterEntity.entityData.prefab);
                 Entity entity = createdEntityObject.GetComponent<Entity>();
                 entities.Add(entity);
                 entity.OnRemovedFromPlay += HandleEntityRemovedFromPlay;

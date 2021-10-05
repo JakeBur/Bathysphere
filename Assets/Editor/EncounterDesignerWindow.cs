@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor;
-using Battle;
 using System.Linq;
 using UnityEditor.UIElements;
+using Battle;
 
 public class EncounterDesignerWindow : EditorWindow
 {
@@ -50,76 +50,67 @@ public class EncounterDesignerWindow : EditorWindow
             foreach (Object it in enumerable)
             {
                 VisualElement encounterInfoBox = rootVisualElement.Query<VisualElement>("encounter-info").First();
-                encounterInfoBox.Clear();
 
                 Encounter encounter = it as Encounter;
 
                 SerializedObject serializedEncounter = new SerializedObject(encounter);
-                
-                /*SerializedObject serializedEncounter = new SerializedObject(encounter);
-                SerializedProperty encounterProperty = serializedEncounter.GetIterator();
-                encounterProperty.Next(true);
 
-                while (encounterProperty.NextVisible(false))
-                {
-                    PropertyField propertyField = new PropertyField(encounterProperty);
-
-                    propertyField.SetEnabled(encounterProperty.name != "n_Script");
-                    propertyField.Bind(serializedEncounter);
-                    encounterInfoBox.Add(propertyField);
-                }*/
-
-                //SerializedObject serializedEncounter = new SerializedObject(encounter.entities);
-                //SerializedProperty entityProperty = serializedEncounter.FindProperty("");
-
+                VisualElement gridSizeBox = rootVisualElement.Query<VisualElement>("grid-size-field").First();
                 PropertyField gridSizeField = new PropertyField(serializedEncounter.FindProperty("gridSize"));
                 gridSizeField.Bind(serializedEncounter);
-                encounterInfoBox.Add(gridSizeField);
+                gridSizeBox.Clear();
+                gridSizeBox.Add(gridSizeField);
 
-                Button openEncounterButton = new Button();
-                openEncounterButton.text = "Open in Encounter Designer";
-                openEncounterButton.clicked += () => EncounterDesigner.Instance.encounter = encounter;
+                Button openEncounterButton = rootVisualElement.Query<Button>("encounter-designer-button").First();
+                openEncounterButton.clicked += () => GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>().encounter = encounter;
                 encounterInfoBox.Add(openEncounterButton);
 
-                PropertyField entitiesField = new PropertyField(serializedEncounter.FindProperty("entities"));
-                entitiesField.Bind(serializedEncounter);
-                entitiesField.style.flexGrow = 1;
-                encounterInfoBox.Add(entitiesField);
-                /*TextField entitiesField = new TextField();
-                encounter.entities[0]
-                gridSizeField.Bind(serializedEncounter);
-                entitiesField.style.flexGrow = 1;
-                encounterInfoBox.Add(entitiesField);*/
-
-
-                /*ListView entityList = new ListView();
+                ListView entityList = rootVisualElement.Query<ListView>("entity-list").First();
                 entityList.makeItem = () =>
                 {
-                    return new PropertyField();
+                    VisualElement entityBox = new VisualElement();
+                    entityBox.style.flexGrow = 1;
+                    entityBox.style.flexShrink = 1;
+
+                    Label label = new Label("DEFAULTLABEL");
+                    label.name = "entity-label";
+                    entityBox.Add(label);
+
+                    label = new Label("DEFAULTLABEL");
+                    label.name = "entity-label";
+                    entityBox.Add(label);
+
+                    //entityBox.HandleEvent(new MouseDownEvent());
+                    
+
+                    return entityBox;
                 };
 
-                //entityList.bindItem = (element, i) => (element as PropertyField) = encounter.entities[i].prefab.name;
-                
                 entityList.bindItem = (element, i) =>
                 {
-                    Debug.Log("ey");
-                    Debug.Log((element as PropertyField));
-                    (element as PropertyField).Bind(new SerializedObject(encounter.entities[i]));
-                        
+                    element.Query<Label>("entity-label").First().text = encounter.entities[i].entityData.name;
+                    element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEntity(mouseDownEvent, encounter.entities[i]));
                 };
 
                 entityList.itemsSource = encounter.entities;
-                entityList.itemHeight = 64;
+                //entityList.itemHeight = 16;
+                entityList.itemHeight = 32;
                 entityList.selectionType = SelectionType.Single;
-                entityList.name = "entitylist";
-                entityList.style.flexGrow = 1;
 
-                encounterInfoBox.Add(entityList);
-                entityList.Refresh();*/
+                entityList.Refresh();
             }
         };
 
         encounterList.Refresh();
+    }
+
+    private void StartDragEntity(MouseDownEvent mouseDownEvent, EncounterEntity encounterEntity)
+    {
+        Debug.Log("trying to start drag");
+        DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+        DragAndDrop.PrepareStartDrag();
+        DragAndDrop.SetGenericData("EncounterEntity", encounterEntity);
+        DragAndDrop.StartDrag("Encounter Entity");
     }
 
     /*private VisualElement CreateEntityListing(Encounter.EncounterEntity entity)

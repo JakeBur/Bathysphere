@@ -9,6 +9,7 @@ namespace Battle
     public class Encounter : ScriptableObject
     {
         public Vector2Int gridSize;
+        //public List<EncounterEntityContainer> entities;
         public List<EncounterEntity> entities;
         //public EntityList entities;
 
@@ -18,11 +19,17 @@ namespace Battle
         }*/
     }
 
+    /*[Serializable]
+    public class EncounterEntityContainer
+    {
+        public EncounterEntity encounterEntity;
+    }*/
+
+
     [Serializable]
     public class EncounterEntity
     {
-        public GameObject prefab;
+        public EntityData entityData;
         public Vector2Int position;
-        public Texture icon;
     }
 }

@@ -83,5 +83,20 @@ namespace Battle
                 return new IClickable[0];
             }
         }
+
+        private GridSquare GetHoveredGridSqaure()
+        {
+            Vector2 screenPoint = Mouse.current.position.ReadValue();
+            Physics.Raycast(Camera.main.ScreenPointToRay(screenPoint), out RaycastHit hitInfo);
+
+            if (hitInfo.collider != null)
+            {
+                return hitInfo.collider.gameObject.GetComponent<GridSquare>();
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

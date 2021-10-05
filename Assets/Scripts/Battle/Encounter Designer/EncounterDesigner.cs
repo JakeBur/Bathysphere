@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEditor;
 using System;
+using System.Reflection;
 
 namespace Battle
 {
@@ -24,6 +25,69 @@ namespace Battle
 
         public bool init = false;
         private Action<SceneView> subscriber;
+
+        private void Start()
+        {
+            Instance = this;
+
+            init = true;
+            SceneView.duringSceneGui -= HandleSceneGUI;
+            SceneView.duringSceneGui += HandleSceneGUI;
+
+            GetComponentInChildren<BattleGridManager>().UpdateSize(encounter.gridSize);
+        }
+
+        private void HandleSceneGUI(SceneView view)
+        {
+            EncounterEntity draggedEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
+
+            if(draggedEntity != null)
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+
+                if (Event.current.type == EventType.MouseEnterWindow)
+                {
+                    Debug.Log("Dropping: " + draggedEntity.entityData.name);
+                    DragAndDrop.AcceptDrag();
+                }
+            }
+        }
+
+        // From https://github.com/lordofduct/spacepuppy-unity-framework/blob/master/SpacepuppyBaseEditor/EditorHelper.cs
+        private static object GetValue_Imp(object source, string name, int index)
+        {
+            var enumerable = GetValue_Imp(source, name) as System.Collections.IEnumerable;
+            if (enumerable == null) return null;
+            var enm = enumerable.GetEnumerator();
+
+            for (int i = 0; i <= index; i++)
+            {
+                if (!enm.MoveNext()) return null;
+            }
+            return enm.Current;
+        }
+
+        // From https://github.com/lordofduct/spacepuppy-unity-framework/blob/master/SpacepuppyBaseEditor/EditorHelper.cs
+        private static object GetValue_Imp(object source, string name)
+        {
+            if (source == null)
+                return null;
+            var type = source.GetType();
+
+            while (type != null)
+            {
+                var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                if (f != null)
+                    return f.GetValue(source);
+
+                var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                if (p != null)
+                    return p.GetValue(source, null);
+
+                type = type.BaseType;
+            }
+            return null;
+        }
 
         private void Update()
         {
