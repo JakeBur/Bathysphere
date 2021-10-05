@@ -19,11 +19,8 @@ namespace Battle
         public Encounter encounter;
 
         public GameObject battleSystems;
-        private InputActions _inputActions;
 
         private List<Entity> _unplacedEntities;
-
-        private Action<SceneView> subscriber;
 
         private Dictionary<EncounterEntity, GameObject> worldObjects;
 
@@ -72,6 +69,8 @@ namespace Battle
 
             if(draggedEntity != null)
             {
+                EditorUtility.SetDirty(draggedEntity);
+
                 Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
                 Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity);
                 GridSquare targetSquare = null;

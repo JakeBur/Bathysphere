@@ -8,13 +8,6 @@ namespace Battle
     public class Encounter : ScriptableObject
     {
         public Vector2Int gridSize;
-        //public List<EncounterEntityContainer> entities;
         public List<EncounterEntity> entities;
-        //public EntityList entities;
-
-        /*public class EntityList : ScriptableObject
-        {
-            List<EncounterEntity> entities;
-        }*/
     }
 }
