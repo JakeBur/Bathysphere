@@ -29,6 +29,10 @@ namespace Battle
         public void UpdateSize(int x, int y)
         {
             if(Grid != null) Grid.DestroyImmediate();
+            foreach(GridSquare gridSquare in GetComponentsInChildren<GridSquare>())
+            {
+                DestroyImmediate(gridSquare.gameObject);
+            }
             InstantiateGrid(x, y);
         }
 

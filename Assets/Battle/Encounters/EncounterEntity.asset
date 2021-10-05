@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f725ffe5b16427d4f80f604709b12e00, type: 3}
-  m_Name: Encounter 1
+  m_Script: {fileID: 11500000, guid: 0f936dce3abf2b046b4c08b5e744ccd5, type: 3}
+  m_Name: EncounterEntity
   m_EditorClassIdentifier: 
-  gridSize: {x: 3, y: 3}
-  entities:
-  - {fileID: 11400000, guid: 4495f0a567afb1344a71e9934d7c6abe, type: 2}
+  entityData: {fileID: 11400000, guid: 542899b59d7ddef42ad8cb6121329b92, type: 2}
+  position: {x: 0, y: 0}

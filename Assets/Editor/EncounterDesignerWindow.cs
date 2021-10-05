@@ -62,35 +62,16 @@ public class EncounterDesignerWindow : EditorWindow
                 gridSizeBox.Add(gridSizeField);
 
                 Button openEncounterButton = rootVisualElement.Query<Button>("encounter-designer-button").First();
-                openEncounterButton.clicked += () => GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>().encounter = encounter;
+                openEncounterButton.clicked += () =>
+                {
+                    Debug.Log("boom");
+                    GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>().SetEncounter(encounter);
+                };
                 encounterInfoBox.Add(openEncounterButton);
 
                 ListView entityList = rootVisualElement.Query<ListView>("entity-list").First();
-                entityList.makeItem = () =>
-                {
-                    VisualElement entityBox = new VisualElement();
-                    entityBox.style.flexGrow = 1;
-                    entityBox.style.flexShrink = 1;
-
-                    Label label = new Label("DEFAULTLABEL");
-                    label.name = "entity-label";
-                    entityBox.Add(label);
-
-                    label = new Label("DEFAULTLABEL");
-                    label.name = "entity-label";
-                    entityBox.Add(label);
-
-                    //entityBox.HandleEvent(new MouseDownEvent());
-                    
-
-                    return entityBox;
-                };
-
-                entityList.bindItem = (element, i) =>
-                {
-                    element.Query<Label>("entity-label").First().text = encounter.entities[i].entityData.name;
-                    element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEntity(mouseDownEvent, encounter.entities[i]));
-                };
+                entityList.makeItem = BuildEntityListing;
+                entityList.bindItem = (element, i) => BindEntityListing(element, encounter.entities[i]);
 
                 entityList.itemsSource = encounter.entities;
                 //entityList.itemHeight = 16;
@@ -102,6 +83,58 @@ public class EncounterDesignerWindow : EditorWindow
         };
 
         encounterList.Refresh();
+    }
+
+    
+    private VisualElement BuildEntityListing()
+    {
+        VisualElement entityBox = new VisualElement();
+        entityBox.style.flexGrow = 1;
+        entityBox.style.flexShrink = 1;
+
+        Label label = new Label("DEFAULTLABEL");
+        label.name = "entity-label";
+        entityBox.Add(label);
+
+        VisualElement columnContainer = new VisualElement();
+        columnContainer.style.flexDirection = FlexDirection.Row;
+        columnContainer.name = "column-container";
+        entityBox.Add(columnContainer);
+
+        
+
+
+        /*label = new Label("Position");
+        label.style.flexGrow = 1;
+        columnContainer.Add(label);*/
+
+
+
+
+        //entityBox.HandleEvent(new MouseDownEvent());
+
+
+        return entityBox;
+    }
+
+    private void BindEntityListing(VisualElement element, EncounterEntity entity)
+    {
+        element.Query<Label>("entity-label").First().text = entity.entityData.name;
+
+        SerializedObject serializedEntity = new SerializedObject(entity);
+
+        PropertyField positionField = new PropertyField(serializedEntity.FindProperty("position"));
+        element.Query<VisualElement>("column-container").First().Add(positionField);
+        positionField.Bind(serializedEntity);
+        positionField.style.flexGrow = 1;
+
+        element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEntity(mouseDownEvent, entity));
+    }
+
+
+    private VisualElement BuildEntityDetails()
+    {
+        return null;
     }
 
     private void StartDragEntity(MouseDownEvent mouseDownEvent, EncounterEntity encounterEntity)

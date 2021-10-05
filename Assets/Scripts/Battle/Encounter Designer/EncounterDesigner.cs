@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEditor;
 using System;
-using System.Reflection;
+using System.Linq;
 
 namespace Battle
 {
@@ -23,18 +23,46 @@ namespace Battle
 
         private List<Entity> _unplacedEntities;
 
-        public bool init = false;
         private Action<SceneView> subscriber;
+
+        private Dictionary<EncounterEntity, GameObject> worldObjects;
+
+        public bool initialize;
 
         private void Start()
         {
+            Initialize();
+        }
+
+        private void Update()
+        {
+            if(!initialize)
+            {
+                initialize = true;
+                Initialize();
+            }
+        }
+
+        private void Initialize()
+        {
             Instance = this;
 
-            init = true;
             SceneView.duringSceneGui -= HandleSceneGUI;
             SceneView.duringSceneGui += HandleSceneGUI;
 
-            GetComponentInChildren<BattleGridManager>().UpdateSize(encounter.gridSize);
+            BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
+            battleGridManager.UpdateSize(encounter.gridSize);
+
+            FindObjectsOfType<Entity>().ToList().ForEach(entity => DestroyImmediate(entity.gameObject));
+
+            worldObjects = new Dictionary<EncounterEntity, GameObject>();
+
+            encounter.entities.ForEach(entity =>
+            {
+                GameObject worldEntity = Instantiate(entity.entityData.prefab);
+                worldEntity.transform.position = battleGridManager.Grid.squares[entity.position.x, entity.position.y].transform.position;
+                worldObjects.Add(entity, worldEntity);
+            });
         }
 
         private void HandleSceneGUI(SceneView view)
@@ -43,70 +71,62 @@ namespace Battle
 
             if(draggedEntity != null)
             {
-                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+                Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+                Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity);
+                GridSquare targetSquare = null;
+
+                if (hitInfo.collider != null)
+                {
+                    targetSquare = hitInfo.collider.gameObject.GetComponent<GridSquare>();
+
+                    if (targetSquare)
+                    {
+                        DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+                        if (worldObjects.ContainsKey(draggedEntity))
+                        {
+                            worldObjects[draggedEntity].SetActive(true);
+                        }
+                        else
+                        {
+                            worldObjects[draggedEntity] = Instantiate(draggedEntity.entityData.prefab);
+                        }
+
+                        worldObjects[draggedEntity].transform.position = targetSquare.transform.position;
+                        draggedEntity.position = targetSquare.Position;
+                    }
+                    else
+                    {
+                        if (worldObjects.ContainsKey(draggedEntity)) worldObjects[draggedEntity].SetActive(false);
+                    }
+                }
+                else
+                {
+                    if (worldObjects.ContainsKey(draggedEntity)) worldObjects[draggedEntity].SetActive(false);
+                }
 
                 if (Event.current.type == EventType.MouseEnterWindow)
                 {
-                    Debug.Log("Dropping: " + draggedEntity.entityData.name);
+                    if(targetSquare)
+                    {
+                        Debug.Log("Dropping: " + draggedEntity.entityData.name);
+                        draggedEntity.position = targetSquare.Position;
+                    }
+                    else
+                    {
+                        draggedEntity.position = new Vector2Int(-1, -1);
+                    }
+
                     DragAndDrop.AcceptDrag();
+                    DragAndDrop.PrepareStartDrag();
                 }
             }
         }
 
-        // From https://github.com/lordofduct/spacepuppy-unity-framework/blob/master/SpacepuppyBaseEditor/EditorHelper.cs
-        private static object GetValue_Imp(object source, string name, int index)
+        public void SetEncounter(Encounter encounter)
         {
-            var enumerable = GetValue_Imp(source, name) as System.Collections.IEnumerable;
-            if (enumerable == null) return null;
-            var enm = enumerable.GetEnumerator();
-
-            for (int i = 0; i <= index; i++)
-            {
-                if (!enm.MoveNext()) return null;
-            }
-            return enm.Current;
-        }
-
-        // From https://github.com/lordofduct/spacepuppy-unity-framework/blob/master/SpacepuppyBaseEditor/EditorHelper.cs
-        private static object GetValue_Imp(object source, string name)
-        {
-            if (source == null)
-                return null;
-            var type = source.GetType();
-
-            while (type != null)
-            {
-                var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-                if (f != null)
-                    return f.GetValue(source);
-
-                var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                if (p != null)
-                    return p.GetValue(source, null);
-
-                type = type.BaseType;
-            }
-            return null;
-        }
-
-        private void Update()
-        {
-            if (!init)
-            {
-                Instance = this;
-
-                init = true;
-                SceneView.beforeSceneGui -= subscriber;
-
-                subscriber = (SceneView view) =>
-                {
-                    if (Event.current.type == EventType.MouseEnterWindow) PutDownEntity();
-                };
-
-                SceneView.duringSceneGui += subscriber;
-
-                GetComponentInChildren<BattleGridManager>().UpdateSize(encounter.gridSize);
-            }
+            Debug.Log("boop");
+            this.encounter = encounter;
+            Initialize();
         }
 
         private void HandleClick(InputAction.CallbackContext context)

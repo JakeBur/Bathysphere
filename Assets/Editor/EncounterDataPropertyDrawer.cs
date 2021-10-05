@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using Battle;
 
-[CustomPropertyDrawer(typeof(EntityData))]
 public class EncounterDataPropertyDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

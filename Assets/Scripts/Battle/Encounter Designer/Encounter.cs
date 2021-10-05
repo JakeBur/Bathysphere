@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace Battle
 {
@@ -17,19 +16,5 @@ namespace Battle
         {
             List<EncounterEntity> entities;
         }*/
-    }
-
-    /*[Serializable]
-    public class EncounterEntityContainer
-    {
-        public EncounterEntity encounterEntity;
-    }*/
-
-
-    [Serializable]
-    public class EncounterEntity
-    {
-        public EntityData entityData;
-        public Vector2Int position;
     }
 }
