@@ -40,6 +40,11 @@ namespace Battle
             }
         }
 
+        private void OnDestroy()
+        {
+            SceneView.duringSceneGui -= HandleSceneGUI;
+        }
+
         private void Initialize()
         {
             Instance = this;
@@ -57,8 +62,11 @@ namespace Battle
             encounter.entities.ForEach(entity =>
             {
                 GameObject worldEntity = Instantiate(entity.entityData.prefab);
-                Debug.Log(entity.position);
-                worldEntity.transform.position = battleGridManager.Grid.squares[entity.position.x, entity.position.y].transform.position;
+                if(battleGridManager.Grid.HasPosition(entity.position))
+                {
+                    worldEntity.transform.position = battleGridManager.Grid.squares[entity.position.x, entity.position.y].transform.position;
+                }
+
                 worldObjects.Add(entity, worldEntity);
             });
         }
@@ -108,7 +116,6 @@ namespace Battle
                 {
                     if(targetSquare)
                     {
-                        Debug.Log("Dropping: " + draggedEntity.entityData.name);
                         draggedEntity.position = targetSquare.Position;
                     }
                     else
@@ -124,7 +131,6 @@ namespace Battle
 
         public void SetEncounter(Encounter encounter)
         {
-            Debug.Log("boop");
             this.encounter = encounter;
             Initialize();
         }

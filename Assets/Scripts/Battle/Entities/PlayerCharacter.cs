@@ -9,8 +9,6 @@ namespace Battle
     /// </summary>
     public class PlayerCharacter : Combatant
     {
-        public EncounterEntity test;
-
         /// <summary>
         /// List of actions that should appear in the contextual action menu when this PlayerCharacter is selected.
         /// </summary>

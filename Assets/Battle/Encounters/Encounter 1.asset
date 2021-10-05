@@ -15,3 +15,5 @@ MonoBehaviour:
   gridSize: {x: 3, y: 3}
   entities:
   - {fileID: 11400000, guid: 4495f0a567afb1344a71e9934d7c6abe, type: 2}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: c8b247979cab62d479342e44c273096b, type: 2}

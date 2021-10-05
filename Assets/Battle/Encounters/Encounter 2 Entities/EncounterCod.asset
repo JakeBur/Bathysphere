@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f936dce3abf2b046b4c08b5e744ccd5, type: 3}
-  m_Name: EncounterEntity
+  m_Name: EncounterCod
   m_EditorClassIdentifier: 
-  entityData: {fileID: 11400000, guid: 542899b59d7ddef42ad8cb6121329b92, type: 2}
-  position: {x: 2, y: 2}
+  entityData: {fileID: 11400000, guid: 158f76610f4cd6647a98ebbd92f24158, type: 2}
+  position: {x: -1, y: -1}
