@@ -11,18 +11,18 @@ public class EntityGizmo : MonoBehaviour
     private void OnEnable()
     {
         //SceneView.onSceneGUIDelegate += (SceneView.OnSceneFunc)Delegate.Combine(SceneView.onSceneGUIDelegate, new SceneView.OnSceneFunc(CustomOnSceneGUI));
-        SceneView.duringSceneGui -= DrawHitbox;
-        SceneView.duringSceneGui += DrawHitbox;
+        SceneView.beforeSceneGui -= DrawHitbox;
+        SceneView.beforeSceneGui += DrawHitbox;
     }
 
     private void OnDisable()
     {
-        SceneView.duringSceneGui -= DrawHitbox;
+        SceneView.beforeSceneGui -= DrawHitbox;
     }
 
     private void OnDestroy()
     {
-        SceneView.duringSceneGui -= DrawHitbox;
+        SceneView.beforeSceneGui -= DrawHitbox;
     }
 
     // Start is called before the first frame update
@@ -39,7 +39,12 @@ public class EntityGizmo : MonoBehaviour
 
     public void DrawHitbox(SceneView sceneView)
     {
-        if(Event.current.type == EventType.DragUpdated || Event.current.type == EventType.Repaint)
+        if (Event.current.type == EventType.DragUpdated || Event.current.type == EventType.Repaint)
+        {
+            return;
+        }
+
+        if (DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity)
         {
             return;
         }
@@ -50,44 +55,38 @@ public class EntityGizmo : MonoBehaviour
 
         //Handles.Button(entityGizmo.transform.position, Quaternion.identity, 1, 1, );
         //Handles.Label(entityGizmo.transform.position + Vector3.up * 3, "HI!");
-        try
+        Handles.BeginGUI();
         {
-            Handles.BeginGUI();
+            Vector2 position = HandleUtility.WorldToGUIPoint(entityGizmo.transform.position);
+            GUIStyle hitboxStyle = new GUIStyle("box");
+
+            GUILayout.BeginArea(new Rect(position.x - 50, position.y - 50, 100, 100), hitboxStyle);
             {
-                Vector2 position = HandleUtility.WorldToGUIPoint(entityGizmo.transform.position);
-                GUIStyle hitboxStyle = new GUIStyle("box");
 
-                GUILayout.BeginArea(new Rect(position.x - 50, position.y - 50, 100, 100), hitboxStyle);
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
                 {
+                    Debug.Log("this");
+                    EncounterDesigner encounterDesigner = FindObjectOfType<EncounterDesigner>();
 
-                    if (Event.current.type == EventType.MouseDown)
+                    if (encounterDesigner)
                     {
-                        EncounterDesigner encounterDesigner = FindObjectOfType<EncounterDesigner>();
+                        EncounterEntity encounterEntity = encounterDesigner.worldObjects.Keys.ToList()
+                            .Find(key => encounterDesigner.worldObjects[key] == entityGizmo.gameObject);
 
-                        if (encounterDesigner)
+                        if (encounterEntity)
                         {
-                            EncounterEntity encounterEntity = encounterDesigner.worldObjects.Keys.ToList()
-                                .Find(key => encounterDesigner.worldObjects[key] == entityGizmo.gameObject);
-
-                            if (encounterEntity)
-                            {
-                                DragAndDrop.PrepareStartDrag();
-                                DragAndDrop.SetGenericData("EncounterEntity", encounterEntity);
-                                DragAndDrop.StartDrag("Encounter Entity");
-                                Event.current.Use();
-                            }
+                            //DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+                            //DragAndDrop.PrepareStartDrag();
+                            DragAndDrop.SetGenericData("EncounterEntity", encounterEntity);
+                            DragAndDrop.StartDrag("Encounter Entity");
+                            Event.current.Use();
                         }
                     }
                 }
-                GUILayout.EndArea();
             }
-            Handles.EndGUI();
+            GUILayout.EndArea();
         }
-        catch
-        {
-            Debug.Log("Error on: " + Event.current.type);
-        }
-
+        Handles.EndGUI();
     }
 
     private void OnDrawGizmos()

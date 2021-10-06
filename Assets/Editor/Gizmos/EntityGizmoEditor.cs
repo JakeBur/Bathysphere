@@ -49,10 +49,10 @@ public class EntityGizmoEditor : Editor
 
                         if(encounterEntity)
                         {
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
                             DragAndDrop.PrepareStartDrag();
                             DragAndDrop.SetGenericData("EncounterEntity", encounterEntity);
                             DragAndDrop.StartDrag("Encounter Entity");
-                            Event.current.Use();
                         }
                     }
                 }

@@ -25,8 +25,6 @@ namespace Battle
         // instantiated preview object for an uncommitted addition of an entityData
         private GameObject entityDataPreview;
 
-        private bool _dragPerformed;
-
         public bool initialize;
 
         private void Start()
@@ -52,7 +50,6 @@ namespace Battle
         private void Initialize()
         {
             Instance = this;
-
 
             SceneView.duringSceneGui -= HandleSceneGUI;
             SceneView.duringSceneGui += HandleSceneGUI;
@@ -149,6 +146,7 @@ namespace Battle
                     if (worldObjects.ContainsKey(entity)) worldObjects[entity].SetActive(false);
                 }
 
+
                 if (Event.current.type == EventType.MouseEnterWindow)
                 {
                     if (targetSquare)
@@ -162,7 +160,7 @@ namespace Battle
 
                     DragAndDrop.AcceptDrag();
                     DragAndDrop.PrepareStartDrag();
-                    Event.current.Use();
+                    //Event.current.Use();
                 }
             }
         }
