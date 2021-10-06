@@ -65,7 +65,6 @@ public class EntityGizmo : MonoBehaviour
 
                 if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
                 {
-                    Debug.Log("this");
                     EncounterDesigner encounterDesigner = FindObjectOfType<EncounterDesigner>();
 
                     if (encounterDesigner)

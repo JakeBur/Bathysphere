@@ -77,7 +77,7 @@ namespace Battle
         /// </summary>
         private void AdvanceTurn()
         {
-            Debug.Log("advancing turn");
+            //Debug.Log("advancing turn");
 
             ITurnOrderEntry currentTurn = _turnOrder[0];
 

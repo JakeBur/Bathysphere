@@ -47,7 +47,7 @@ namespace Battle
 
         public override void StartTurn()
         {
-            Debug.Log("Starting turn for player: " + gameObject);
+            //Debug.Log("Starting turn for player: " + gameObject);
         }
 
         /// <summary>

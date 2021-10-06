@@ -9,7 +9,7 @@ namespace Battle
     {
         public static BattleManager Instance;
 
-        public Encounter encounter;
+        private Encounter _encounter;
 
         public List<Entity> entities;
 
@@ -29,9 +29,16 @@ namespace Battle
             TurnManager.Instance.AddTurnOrderEntry(entities[1] as ITurnOrderEntry);
             TurnManager.Instance.AddTurnOrderEntry(entities[2] as ITurnOrderEntry);
             TurnManager.Instance.StartTurnOrder();*/
+            
+        }
+
+        public void StartEncounter(Encounter encounter)
+        {
+            _encounter = encounter;
+
             BattleGridManager.Instance.InstantiateGrid(encounter.gridSize);
 
-            foreach(EncounterEntity encounterEntity in encounter.entities)//.Select(container => container.encounterEntity)
+            foreach (EncounterEntity encounterEntity in encounter.entities)//.Select(container => container.encounterEntity)
             {
                 GameObject createdEntityObject = Instantiate(encounterEntity.entityData.prefab);
                 Entity entity = createdEntityObject.GetComponent<Entity>();

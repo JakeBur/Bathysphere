@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: EncounterCod 0
   m_EditorClassIdentifier: 
   entityData: {fileID: 11400000, guid: 158f76610f4cd6647a98ebbd92f24158, type: 2}
-  position: {x: 3, y: 3}
+  position: {x: 3, y: 2}

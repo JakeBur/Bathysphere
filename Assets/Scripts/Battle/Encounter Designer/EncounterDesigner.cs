@@ -8,8 +8,8 @@ using System.Linq;
 
 namespace Battle
 {
-
-    [ExecuteInEditMode]
+    //[ExecuteInEditMode]
+    [ExecuteAlways]
     public class EncounterDesigner : MonoBehaviour
     {
         public static SerializedProperty dragDropItem;
@@ -25,7 +25,24 @@ namespace Battle
         // instantiated preview object for an uncommitted addition of an entityData
         private GameObject entityDataPreview;
 
+        public GameObject battleSystemsPrefab;
+
         public bool initialize;
+
+        private void Awake()
+        {
+            if(Application.isPlaying)
+            {
+                CleanScene();
+                GameObject battleSystems = Instantiate(battleSystemsPrefab);
+                battleSystems.GetComponent<BattleManager>().StartEncounter(encounter);
+            }
+            else
+            {
+                Initialize();
+            }
+            
+        }
 
         private void Start()
         {
@@ -61,6 +78,12 @@ namespace Battle
 
             encounter.OnContentsUpdated -= InitializeEntities;
             encounter.OnContentsUpdated += InitializeEntities;
+        }
+
+        private void CleanScene()
+        {
+            FindObjectsOfType<Entity>().ToList().ForEach(entity => DestroyImmediate(entity.gameObject));
+            Destroy(FindObjectOfType<BattleManager>().gameObject);
         }
 
         private void InitializeEntities()
