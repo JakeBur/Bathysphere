@@ -20,9 +20,12 @@ namespace Battle
 
         public GameObject battleSystems;
 
-        private List<Entity> _unplacedEntities;
-
         private Dictionary<EncounterEntity, GameObject> worldObjects;
+
+        // instantiated preview object for an uncommitted addition of an entityData
+        private GameObject entityDataPreview;
+
+        private bool _dragPerformed;
 
         public bool initialize;
 
@@ -43,11 +46,13 @@ namespace Battle
         private void OnDestroy()
         {
             SceneView.duringSceneGui -= HandleSceneGUI;
+            encounter.OnContentsUpdated -= InitializeEntities;
         }
 
         private void Initialize()
         {
             Instance = this;
+
 
             SceneView.duringSceneGui -= HandleSceneGUI;
             SceneView.duringSceneGui += HandleSceneGUI;
@@ -55,16 +60,31 @@ namespace Battle
             BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
             battleGridManager.UpdateSize(encounter.gridSize);
 
-            FindObjectsOfType<Entity>().ToList().ForEach(entity => DestroyImmediate(entity.gameObject));
+            InitializeEntities();
 
+            encounter.OnContentsUpdated -= InitializeEntities;
+            encounter.OnContentsUpdated += InitializeEntities;
+        }
+
+        private void InitializeEntities()
+        {
+            BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
+
+            FindObjectsOfType<Entity>().ToList().ForEach(entity => DestroyImmediate(entity.gameObject));
+            
             worldObjects = new Dictionary<EncounterEntity, GameObject>();
 
             encounter.entities.ForEach(entity =>
             {
                 GameObject worldEntity = Instantiate(entity.entityData.prefab);
-                if(battleGridManager.Grid.HasPosition(entity.position))
+
+                if (battleGridManager.Grid.HasPosition(entity.position))
                 {
                     worldEntity.transform.position = battleGridManager.Grid.squares[entity.position.x, entity.position.y].transform.position;
+                }
+                else
+                {
+                    worldEntity.SetActive(false);
                 }
 
                 worldObjects.Add(entity, worldEntity);
@@ -73,11 +93,27 @@ namespace Battle
 
         private void HandleSceneGUI(SceneView view)
         {
-            EncounterEntity draggedEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
-
-            if(draggedEntity != null && encounter.entities.Contains(draggedEntity))
+            EncounterEntity encounterEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
+            if(encounterEntity)
             {
-                EditorUtility.SetDirty(draggedEntity);
+                HandleDragDrop(encounterEntity);
+                return;
+            }
+
+            if (DragAndDrop.objectReferences.Length == 0) return;
+            EntityData entityData = DragAndDrop.objectReferences.First() as EntityData;
+            if (entityData)
+            {
+                HandleDragDrop(entityData);
+                return;
+            }
+        }
+
+        private void HandleDragDrop(EncounterEntity entity)
+        {
+            if (encounter.entities.Contains(entity))
+            {
+                EditorUtility.SetDirty(entity);
 
                 Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
                 Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity);
@@ -90,47 +126,112 @@ namespace Battle
                     if (targetSquare)
                     {
                         DragAndDrop.visualMode = DragAndDropVisualMode.Move;
-                        if (worldObjects.ContainsKey(draggedEntity))
+                        if (worldObjects.ContainsKey(entity))
                         {
-                            worldObjects[draggedEntity].SetActive(true);
+                            worldObjects[entity].SetActive(true);
                         }
                         else
                         {
-                            worldObjects[draggedEntity] = Instantiate(draggedEntity.entityData.prefab);
+                            worldObjects[entity] = Instantiate(entity.entityData.prefab);
                         }
 
-                        worldObjects[draggedEntity].transform.position = targetSquare.transform.position;
-                        draggedEntity.position = targetSquare.Position;
+                        worldObjects[entity].transform.position = targetSquare.transform.position;
+                        entity.position = targetSquare.Position;
                     }
                     else
                     {
-                        if (worldObjects.ContainsKey(draggedEntity)) worldObjects[draggedEntity].SetActive(false);
+                        if (worldObjects.ContainsKey(entity)) worldObjects[entity].SetActive(false);
                     }
                 }
                 else
                 {
-                    if (worldObjects.ContainsKey(draggedEntity)) worldObjects[draggedEntity].SetActive(false);
+                    if (worldObjects.ContainsKey(entity)) worldObjects[entity].SetActive(false);
                 }
 
                 if (Event.current.type == EventType.MouseEnterWindow)
                 {
-                    if(targetSquare)
+                    if (targetSquare)
                     {
-                        draggedEntity.position = targetSquare.Position;
+                        entity.position = targetSquare.Position;
                     }
                     else
                     {
-                        draggedEntity.position = new Vector2Int(-1, -1);
+                        entity.position = new Vector2Int(-1, -1);
                     }
 
                     DragAndDrop.AcceptDrag();
                     DragAndDrop.PrepareStartDrag();
+                    Event.current.Use();
                 }
             }
         }
 
+        private void HandleDragDrop(EntityData entity)
+        {
+            EditorUtility.SetDirty(entity);
+
+            Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity);
+            GridSquare targetSquare = null;
+
+            if (hitInfo.collider != null)
+            {
+                targetSquare = hitInfo.collider.gameObject.GetComponent<GridSquare>();
+
+                if (targetSquare)
+                {
+                    DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+                    if (!(Event.current.type == EventType.DragPerform || Event.current.type == EventType.DragUpdated)) return;
+
+                    if (entityDataPreview)
+                    {
+                        entityDataPreview.SetActive(true);
+                    }
+                    else
+                    {
+                        Debug.Log("making new entity data preview");
+                        entityDataPreview = Instantiate(entity.prefab);
+                    }
+
+                    entityDataPreview.transform.position = targetSquare.transform.position;
+                }
+                else
+                {
+                    if (entityDataPreview) entityDataPreview.SetActive(false);
+                }
+            }
+            else
+            {
+                if (entityDataPreview) entityDataPreview.SetActive(false);
+            }
+
+            if (Event.current.type == EventType.DragPerform || Event.current.type == EventType.DragExited)
+            {
+                Debug.Log("sup");
+
+                Vector2Int? position = null;
+                if(targetSquare)
+                {
+                    position = targetSquare.Position;
+                }
+
+                EncounterEntity encounterEntity = encounter.AddEntity(entity, position);
+                DestroyImmediate(entityDataPreview);
+
+                Event.current.Use();
+                DragAndDrop.AcceptDrag();
+            }
+
+            /*if(Event.current.type == EventType.DragExited)
+            {
+                DestroyImmediate(entityDataPreview);
+            }*/
+        }
+
         public void SetEncounter(Encounter encounter)
         {
+            this.encounter.OnContentsUpdated -= InitializeEntities;
+
             this.encounter = encounter;
             Initialize();
         }
@@ -153,27 +254,6 @@ namespace Battle
                 Debug.Log("putting down: " + dragDropItem);
                 dragDropItem = null;
             }
-        }
-
-        public void UpdateGridSize(int x, int y)
-        {
-            BattleGridManager gridManager = battleSystems.GetComponent<BattleGridManager>();
-
-            List<Entity> entities = gridManager.Grid.FindEntities();
-
-            gridManager.UpdateSize(x, y);
-            entities.ForEach(entity =>
-            {
-                if(gridManager.Grid.HasPosition(entity.Square.Position))
-                {
-                    entity.Square = gridManager.Grid[entity.Square.Position.x, entity.Square.Position.y];
-                }
-                else
-                {
-                    entity.Square = null;
-                    _unplacedEntities.Add(entity);
-                }
-            });
         }
 
         public Vector2Int GetGridSize()

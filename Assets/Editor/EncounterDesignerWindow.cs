@@ -90,17 +90,26 @@ public class EncounterDesignerWindow : EditorWindow
 
         entityList.Refresh();
 
+        // refresh the list whenever the encounter's elements change
+        encounter.OnContentsUpdated -= entityList.Refresh;// make sure we only subscribe once
+        encounter.OnContentsUpdated += entityList.Refresh;
+
         // Open encounter button
         Button openEncounterButton = rootVisualElement.Query<Button>("encounter-designer-button").First();
-        openEncounterButton.clicked += () =>
-        {
-            GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>().SetEncounter(encounter);
-        };
+
+        openEncounterButton.clicked -= HandleEncounterButtonClick;
+        openEncounterButton.clicked += HandleEncounterButtonClick;
+
         encounterInfoBox.Add(openEncounterButton);
 
         // Drag and drop
         encounterInfoBox.RegisterCallback<DragUpdatedEvent>(HandleDragUpdate);
         encounterInfoBox.RegisterCallback<DragPerformEvent>(HandleDragPerform);
+    }
+
+    private void HandleEncounterButtonClick()
+    {
+        GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>().SetEncounter(selectedEncounter);
     }
 
     private void HandleDragUpdate(DragUpdatedEvent dragUpdatedEvent)
@@ -121,51 +130,8 @@ public class EncounterDesignerWindow : EditorWindow
 
         if (entityData != null)
         {
-            string encounterPath = MovePathUpOneLevel(AssetDatabase.GetAssetPath(selectedEncounter));
-            Debug.Log(encounterPath);
-
-            string folderPath = encounterPath + "/" + selectedEncounter.name + " Entities";
-
-            if(!AssetDatabase.IsValidFolder(folderPath))
-            {
-                AssetDatabase.CreateFolder(encounterPath, selectedEncounter.name + " Entities");
-            }
-
-            EncounterEntity createdEncounterEntity = ScriptableObject.CreateInstance(typeof(EncounterEntity)) as EncounterEntity;
-            createdEncounterEntity.entityData = entityData;
-            createdEncounterEntity.position = new Vector2Int(-1, -1);
-
-            string assetPath = folderPath + "/Encounter" + entityData.name;
-            string postfix = "";
-
-            int postfixNumber = 0;
-
-            while(AssetDatabase.LoadAssetAtPath(assetPath + postfix, typeof(EncounterEntity)) != null)
-            {
-                postfix = " " + postfixNumber.ToString();
-                postfixNumber++;
-            }
-
-            AssetDatabase.CreateAsset(createdEncounterEntity, assetPath + postfix + ".asset");
-
-            selectedEncounter.entities.Add(createdEncounterEntity);
-
-            entityList.Refresh();
+            selectedEncounter.AddEntity(entityData);
         }
-    }
-
-    private static string MovePathUpOneLevel(string path)
-    {
-        string[] elements = path.Split('/');
-
-        string finalPath = "";
-
-        for(int i = 0; i < elements.Length - 1; i++)
-        {
-            finalPath += elements[i] + (i == elements.Length - 2 ? "" : "/");
-        }
-
-        return finalPath;
     }
 
     private VisualElement BuildEntityListing()
@@ -183,6 +149,10 @@ public class EncounterDesignerWindow : EditorWindow
         columnContainer.name = "column-container";
         entityBox.Add(columnContainer);
 
+        Button deleteButton = new Button();
+        deleteButton.name = "delete-button";
+        deleteButton.text = "Delete";
+        columnContainer.Add(deleteButton);
 
         return entityBox;
     }
@@ -198,13 +168,10 @@ public class EncounterDesignerWindow : EditorWindow
         positionField.Bind(serializedEntity);
         positionField.style.flexGrow = 1;
 
+        Button deleteButton = element.Query<Button>("delete-button").First();
+        deleteButton.clicked += () => selectedEncounter.RemoveEntity(entity);
+
         element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEntity(mouseDownEvent, entity));
-    }
-
-
-    private VisualElement BuildEntityDetails()
-    {
-        return null;
     }
 
     private void StartDragEntity(MouseDownEvent mouseDownEvent, EncounterEntity encounterEntity)
@@ -214,17 +181,6 @@ public class EncounterDesignerWindow : EditorWindow
         DragAndDrop.SetGenericData("EncounterEntity", encounterEntity);
         DragAndDrop.StartDrag("Encounter Entity");
     }
-
-    /*private VisualElement CreateEntityListing(Encounter.EncounterEntity entity)
-    {
-        VisualElement visualElement = new VisualElement();
-
-        Image image = new Image();
-        image.image = entity.entity.gameObject;
-
-        visualElement.Add();
-    }*/
-
 
     private void OnEnable()
     {
