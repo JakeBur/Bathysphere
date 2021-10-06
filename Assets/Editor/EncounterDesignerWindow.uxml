@@ -1,17 +1,19 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="EncounterDesignerWindow.uss" />
     <ui:VisualElement name="columns" style="flex-direction: row; flex-grow: 1; max-height: 800px; min-height: 100%;">
-        <ui:VisualElement name="encounter-browser" style="flex-grow: 1; max-width: 200px; min-height: 399px;">
+        <ui:VisualElement name="browser" style="flex-grow: 1; max-width: 200px; min-height: 399px;">
             <ui:Button text="New Encounter" display-tooltip-when-elided="true" name="add-encounter-button" style="width: auto; white-space: nowrap; flex-shrink: 1; flex-grow: 0;" />
             <ui:ListView focusable="true" name="encounter-list" style="height: auto; flex-grow: 1;" />
-            <ui:VisualElement style="flex-grow: 1;" />
+            <ui:VisualElement name="divider" style="width: auto; border-left-color: rgb(47, 47, 47); border-right-color: rgb(47, 47, 47); border-top-color: rgb(47, 47, 47); border-bottom-color: rgb(47, 47, 47); border-left-width: 3px; border-right-width: 3px; border-top-width: 3px; border-bottom-width: 3px; flex-direction: column; flex-grow: 0; height: 5px; max-width: none;" />
+            <ui:ListView focusable="true" name="entityData-list" style="flex-grow: 1;" />
         </ui:VisualElement>
         <ui:VisualElement name="column-divider" style="width: 5px; border-left-color: rgb(47, 47, 47); border-right-color: rgb(47, 47, 47); border-top-color: rgb(47, 47, 47); border-bottom-color: rgb(47, 47, 47); border-left-width: 3px; border-right-width: 3px; border-top-width: 3px; border-bottom-width: 3px;" />
         <ui:VisualElement name="encounter-info" style="flex-grow: 1; min-height: 100%;">
             <ui:VisualElement name="grid-size-field" />
+            <ui:VisualElement name="divider" style="width: auto; border-left-color: rgb(47, 47, 47); border-right-color: rgb(47, 47, 47); border-top-color: rgb(47, 47, 47); border-bottom-color: rgb(47, 47, 47); border-left-width: 3px; border-right-width: 3px; border-top-width: 3px; border-bottom-width: 3px; flex-direction: column; flex-grow: 0; height: 5px; max-width: none;" />
             <ui:Button text="Open in Encounter Designer" display-tooltip-when-elided="true" name="encounter-designer-button" />
             <ui:ListView focusable="true" name="entity-list" style="flex-grow: 1;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="outline" style="width: auto; border-left-color: rgb(47, 47, 47); border-right-color: rgb(47, 47, 47); border-top-color: rgb(47, 47, 47); border-bottom-color: rgb(47, 47, 47); border-left-width: 3px; border-right-width: 3px; border-top-width: 3px; border-bottom-width: 3px; flex-direction: column; flex-grow: 0; height: 5px; max-width: none;" />
+    <ui:VisualElement name="divider" style="width: auto; border-left-color: rgb(47, 47, 47); border-right-color: rgb(47, 47, 47); border-top-color: rgb(47, 47, 47); border-bottom-color: rgb(47, 47, 47); border-left-width: 3px; border-right-width: 3px; border-top-width: 3px; border-bottom-width: 3px; flex-direction: column; flex-grow: 0; height: 5px; max-width: none;" />
 </ui:UXML>

@@ -121,8 +121,17 @@ namespace Battle
                 return;
             }
 
+            // recieve EntityData from our own drag start
+            EntityData entityData = DragAndDrop.GetGenericData("EntityData") as EntityData;
+            if (entityData)
+            {
+                HandleDragDrop(entityData);
+                return;
+            }
+
+            // receive EntityData from Unity file system
             if (DragAndDrop.objectReferences.Length == 0) return;
-            EntityData entityData = DragAndDrop.objectReferences.First() as EntityData;
+            entityData = DragAndDrop.objectReferences.First() as EntityData;
             if (entityData)
             {
                 HandleDragDrop(entityData);

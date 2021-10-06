@@ -32,6 +32,18 @@ public class EncounterDesignerWindow : EditorWindow
         }
     }
 
+    private void FindAllEntityData(out EntityData[] entityData)
+    {
+        string[] guids = AssetDatabase.FindAssets("t:EntityData");
+
+        entityData = new EntityData[guids.Length];
+
+        for (int i = 0; i < guids.Length; i++)
+        {
+            entityData[i] = AssetDatabase.LoadAssetAtPath<EntityData>(AssetDatabase.GUIDToAssetPath(guids[i]));
+        }
+    }
+
     private void BuildEncounterListView()
     {
         FindAllEncounters(out Encounter[] encounters);
@@ -57,6 +69,27 @@ public class EncounterDesignerWindow : EditorWindow
         };
 
         encounterList.Refresh();
+    }
+
+    private void BuildEntityDataListView()
+    {
+        FindAllEntityData(out EntityData[] entityData);
+        Debug.Log("building");
+        Debug.Log(entityData.Length);
+
+        ListView entityDataList = rootVisualElement.Query<ListView>("entityData-list").First();
+        entityDataList.makeItem = () => new Label();
+        entityDataList.bindItem = (element, i) =>
+        {
+            element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEntityData(mouseDownEvent, entityData[i]));
+            (element as Label).text = entityData[i].name;
+        };
+
+        entityDataList.itemsSource = entityData;
+        entityDataList.itemHeight = 16;
+        entityDataList.selectionType = SelectionType.Single;
+
+        entityDataList.Refresh();
     }
 
     private void BuildEncounterInfoBox(Encounter encounter)
@@ -114,10 +147,25 @@ public class EncounterDesignerWindow : EditorWindow
 
     private void HandleDragUpdate(DragUpdatedEvent dragUpdatedEvent)
     {
-        if (DragAndDrop.objectReferences.Length == 0) return;
+        EncounterEntity encounterEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
+        if (encounterEntity)
+        {
+            DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+            return;
+        }
 
-        EntityData entityData = DragAndDrop.objectReferences.First() as EntityData;
-        
+        // recieve EntityData from our own drag start
+        EntityData entityData = DragAndDrop.GetGenericData("EntityData") as EntityData;
+        if (entityData)
+        {
+            DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+            return;
+        }
+
+        // receive EntityData from Unity file system
+        if (DragAndDrop.objectReferences.Length == 0) return;
+        entityData = DragAndDrop.objectReferences.First() as EntityData;
+
         if (entityData != null)
         {
             DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
@@ -126,7 +174,23 @@ public class EncounterDesignerWindow : EditorWindow
 
     private void HandleDragPerform(DragPerformEvent dragPerformEvent)
     {
-        EntityData entityData = DragAndDrop.objectReferences.First() as EntityData;
+        EncounterEntity encounterEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
+        if (encounterEntity)
+        {
+            encounterEntity.position = new Vector2Int(-1, -1);
+            return;
+        }
+
+        // recieve EntityData from our own drag start
+        EntityData entityData = DragAndDrop.GetGenericData("EntityData") as EntityData;
+        if (entityData)
+        {
+            selectedEncounter.AddEntity(entityData);
+            return;
+        }
+
+        // receive EntityData from Unity file system
+        entityData = DragAndDrop.objectReferences.First() as EntityData;
 
         if (entityData != null)
         {
@@ -171,15 +235,23 @@ public class EncounterDesignerWindow : EditorWindow
         Button deleteButton = element.Query<Button>("delete-button").First();
         deleteButton.clicked += () => selectedEncounter.RemoveEntity(entity);
 
-        element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEntity(mouseDownEvent, entity));
+        element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEncounterEntity(mouseDownEvent, entity));
     }
 
-    private void StartDragEntity(MouseDownEvent mouseDownEvent, EncounterEntity encounterEntity)
+    private void StartDragEncounterEntity(MouseDownEvent mouseDownEvent, EncounterEntity encounterEntity)
     {
         DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
         DragAndDrop.PrepareStartDrag();
         DragAndDrop.SetGenericData("EncounterEntity", encounterEntity);
         DragAndDrop.StartDrag("Encounter Entity");
+    }
+
+    private void StartDragEntityData(MouseDownEvent mouseDownEvent, EntityData entityData)
+    {
+        DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
+        DragAndDrop.PrepareStartDrag();
+        DragAndDrop.SetGenericData("EntityData", entityData);
+        DragAndDrop.StartDrag("EntityData");
     }
 
     private void OnEnable()
@@ -189,5 +261,6 @@ public class EncounterDesignerWindow : EditorWindow
         rootVisualElement.Add(treeAsset);
 
         BuildEncounterListView();
+        BuildEntityDataListView();
     }
 }
