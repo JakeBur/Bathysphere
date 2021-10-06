@@ -20,7 +20,7 @@ namespace Battle
 
         public GameObject battleSystems;
 
-        private Dictionary<EncounterEntity, GameObject> worldObjects;
+        public Dictionary<EncounterEntity, GameObject> worldObjects;
 
         // instantiated preview object for an uncommitted addition of an entityData
         private GameObject entityDataPreview;
@@ -77,6 +77,7 @@ namespace Battle
             encounter.entities.ForEach(entity =>
             {
                 GameObject worldEntity = Instantiate(entity.entityData.prefab);
+                worldEntity.AddComponent<EntityGizmo>();
 
                 if (battleGridManager.Grid.HasPosition(entity.position))
                 {
@@ -207,8 +208,6 @@ namespace Battle
 
             if (Event.current.type == EventType.DragPerform || Event.current.type == EventType.DragExited)
             {
-                Debug.Log("sup");
-
                 Vector2Int? position = null;
                 if(targetSquare)
                 {

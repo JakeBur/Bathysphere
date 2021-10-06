@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: {x: 5, y: 5}
   entities:
-  - {fileID: 11400000, guid: c8b247979cab62d479342e44c273096b, type: 2}
-  - {fileID: 11400000, guid: c55c6a562536079428cfbb863e6f3fec, type: 2}
+  - {fileID: 11400000, guid: cd73c43a8ba12294abf95384c73086a6, type: 2}
+  - {fileID: 11400000, guid: f959fb6822304184e920b618fe7c91da, type: 2}

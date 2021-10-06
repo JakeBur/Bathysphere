@@ -52,7 +52,6 @@ namespace Battle
         public void AddEntity(EncounterEntity encounterEntity)
         {
             entities.Add(encounterEntity);
-            Debug.Log("we should be subscribed here but....");
             OnContentsUpdated?.Invoke();
         }
 
