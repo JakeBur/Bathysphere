@@ -96,12 +96,12 @@ namespace Battle
 
             encounter.entities.ForEach(entity =>
             {
-                GameObject worldEntity = Instantiate(entity.entityData.prefab);
+                GameObject worldEntity = Instantiate(entity.EntityData.prefab);
                 worldEntity.AddComponent<EntityGizmo>();
 
-                if (battleGridManager.Grid.HasPosition(entity.position))
+                if (battleGridManager.Grid.HasPosition(entity.Position))
                 {
-                    worldEntity.transform.position = battleGridManager.Grid.squares[entity.position.x, entity.position.y].transform.position;
+                    worldEntity.transform.position = battleGridManager.Grid.squares[entity.Position.x, entity.Position.y].transform.position;
                 }
                 else
                 {
@@ -161,11 +161,11 @@ namespace Battle
                         }
                         else
                         {
-                            worldObjects[entity] = Instantiate(entity.entityData.prefab);
+                            worldObjects[entity] = Instantiate(entity.EntityData.prefab);
                         }
 
                         worldObjects[entity].transform.position = targetSquare.transform.position;
-                        entity.position = targetSquare.Position;
+                        entity.Position = targetSquare.Position;
                     }
                     else
                     {
@@ -182,16 +182,15 @@ namespace Battle
                 {
                     if (targetSquare)
                     {
-                        entity.position = targetSquare.Position;
+                        entity.Position = targetSquare.Position;
                     }
                     else
                     {
-                        entity.position = new Vector2Int(-1, -1);
+                        entity.Position = new Vector2Int(-1, -1);
                     }
 
                     DragAndDrop.AcceptDrag();
                     DragAndDrop.PrepareStartDrag();
-                    //Event.current.Use();
                 }
             }
         }
@@ -217,7 +216,6 @@ namespace Battle
                     }
                     else
                     {
-                        Debug.Log("making new entity data preview");
                         entityDataPreview = Instantiate(entity.prefab);
                     }
 

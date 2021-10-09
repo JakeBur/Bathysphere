@@ -27,8 +27,8 @@ namespace Battle
 
             // create new EncounterEntity container for entityData
             EncounterEntity createdEncounterEntity = ScriptableObject.CreateInstance(typeof(EncounterEntity)) as EncounterEntity;
-            createdEncounterEntity.entityData = entityData;
-            createdEncounterEntity.position = position != null ? (Vector2Int)position : new Vector2Int(-1, -1);
+            createdEncounterEntity.EntityData = entityData;
+            createdEncounterEntity.Position = position != null ? (Vector2Int)position : new Vector2Int(-1, -1);
 
             // add that created EncounterEntity to the asset database
             string assetPath = folderPath + "/Encounter" + entityData.name;

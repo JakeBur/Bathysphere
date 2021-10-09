@@ -177,7 +177,7 @@ public class EncounterDesignerWindow : EditorWindow
         EncounterEntity encounterEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
         if (encounterEntity)
         {
-            encounterEntity.position = new Vector2Int(-1, -1);
+            encounterEntity.Position = new Vector2Int(-1, -1);
             return;
         }
 
@@ -213,27 +213,29 @@ public class EncounterDesignerWindow : EditorWindow
         columnContainer.name = "column-container";
         entityBox.Add(columnContainer);
 
+        Label position = new Label("POSITIONLABEL");
+        position.name = "position";
+        columnContainer.Add(position);
+
         Button deleteButton = new Button();
         deleteButton.name = "delete-button";
         deleteButton.text = "Delete";
         columnContainer.Add(deleteButton);
+        deleteButton.style.flexDirection = FlexDirection.RowReverse;
 
         return entityBox;
     }
 
     private void BindEntityListing(VisualElement element, EncounterEntity entity)
     {
-        element.Query<Label>("entity-label").First().text = entity.entityData.name;
-
-        SerializedObject serializedEntity = new SerializedObject(entity);
-
-        PropertyField positionField = new PropertyField(serializedEntity.FindProperty("position"));
-        element.Query<VisualElement>("column-container").First().Add(positionField);
-        positionField.Bind(serializedEntity);
-        positionField.style.flexGrow = 1;
+        element.Query<Label>("entity-label").First().text = entity.EntityData.name;
 
         Button deleteButton = element.Query<Button>("delete-button").First();
         deleteButton.clicked += () => selectedEncounter.RemoveEntity(entity);
+
+        Label position = element.Query<Label>("position").First();
+        position.text = $"X: {entity.Position.x} Y: {entity.Position.y}";
+        entity.OnContentsUpdated += () => position.text = $"X: {entity.Position.x} Y: {entity.Position.y}";
 
         element.RegisterCallback<MouseDownEvent>((MouseDownEvent mouseDownEvent) => StartDragEncounterEntity(mouseDownEvent, entity));
     }

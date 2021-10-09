@@ -40,11 +40,11 @@ namespace Battle
 
             foreach (EncounterEntity encounterEntity in encounter.entities)//.Select(container => container.encounterEntity)
             {
-                GameObject createdEntityObject = Instantiate(encounterEntity.entityData.prefab);
+                GameObject createdEntityObject = Instantiate(encounterEntity.EntityData.prefab);
                 Entity entity = createdEntityObject.GetComponent<Entity>();
                 entities.Add(entity);
                 entity.OnRemovedFromPlay += HandleEntityRemovedFromPlay;
-                entity.Square = BattleGridManager.Instance.Grid[encounterEntity.position.x, encounterEntity.position.y];
+                entity.Square = BattleGridManager.Instance.Grid[encounterEntity.Position.x, encounterEntity.Position.y];
                 TurnManager.Instance.AddTurnOrderEntry(entity as ITurnOrderEntry);
             }
 
