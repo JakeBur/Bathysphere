@@ -8,7 +8,7 @@ namespace Battle
     /// <summary>
     /// An Entity is a GameObject that can be placed on a BattleGrid at a specific GridSquare
     /// </summary>
-    public class Entity : MonoBehaviour, ISelectable
+    public abstract class Entity : MonoBehaviour, ISelectable
     {
         /// <summary>
         /// Action to invoke when this Entity is removed from play.
@@ -54,15 +54,8 @@ namespace Battle
             OnRemovedFromPlay?.Invoke(this);
         }
 
-        public void Select()
-        {
-
-        }
-
-        public void Deselect()
-        {
-
-        }
+        public abstract void Select();
+        public abstract void Deselect();
 
         public virtual bool IsSelectable()
         {

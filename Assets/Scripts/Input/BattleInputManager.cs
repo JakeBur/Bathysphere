@@ -35,9 +35,7 @@ namespace Battle
             Instance = this;
 
             _inputActions = new InputActions();
-
             _inputActions.Enable();
-
             _inputActions.Battle.Select.started += HandleClick;
             _inputActions.Battle.Cancel.started += (InputAction.CallbackContext context) => OnCancelPressed?.Invoke();
         }

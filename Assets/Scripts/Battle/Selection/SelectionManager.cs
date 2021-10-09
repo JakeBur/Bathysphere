@@ -34,6 +34,15 @@ namespace Battle
             BattleGridManager.Instance.OnSquareClicked.AddListener(HandleClick, 0);
         }
 
+        public void Select(ISelectable selectable)
+        {
+            if (selected != null) selected.Deselect();
+            selected = selectable;
+            selected.Select();
+
+            OnSelect?.Invoke(selected);
+        }
+
         /// <summary>
         /// Handler for click events from the BattleGrid.
         /// </summary>
@@ -48,11 +57,7 @@ namespace Battle
                 {
                     if(entity.IsSelectable())
                     {
-                        if(selected != null) selected.Deselect();
-                        selected = entity;
-                        selected.Select();
-
-                        OnSelect?.Invoke(selected);
+                        Select(entity);
 
                         // only select one entity
                         break;

@@ -14,9 +14,17 @@ namespace Battle
         public GameObject pathMarkerPrefab;
         public GameObject targetMarkerPrefab;
 
+        public override void Deselect()
+        {
+        }
+
         public override List<IBattleAction> GetPrimedActions()
         {
             return new List<IBattleAction>();
+        }
+
+        public override void Select()
+        {
         }
 
         public override void StartTurn()

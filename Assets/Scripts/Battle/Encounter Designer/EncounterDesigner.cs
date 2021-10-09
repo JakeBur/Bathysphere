@@ -108,7 +108,7 @@ namespace Battle
         private void CleanScene()
         {
             FindObjectsOfType<Entity>().ToList().ForEach(entity => DestroyImmediate(entity.gameObject));
-            if(Application.isPlaying) Destroy(FindObjectOfType<BattleManager>().gameObject);
+            if(Application.isPlaying) DestroyImmediate(FindObjectOfType<BattleManager>().gameObject);
         }
 
         private void InitializeEntities()

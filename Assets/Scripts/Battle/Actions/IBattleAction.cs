@@ -12,7 +12,29 @@ namespace Battle
     {
         bool CanApplyToSquare(GridSquare gridSquare);
         void Apply(GridSquare gridSquare);
+
+        List<GridSquare> FindThreatenedSquares();
     }
+
+    public static class BattleActionExtensions
+    {
+        public static List<GridSquare> FindTargetableSquares(this IBattleAction battleAction)
+        {
+            List<GridSquare> targetableSquares = new List<GridSquare>();
+
+            foreach(GridSquare gridSquare in BattleGridManager.Instance.Grid.squares)
+            {
+                if(battleAction.CanApplyToSquare(gridSquare))
+                {
+                    targetableSquares.Add(gridSquare);
+
+                }
+            }
+
+            return targetableSquares;
+        }
+    }
+       
 }
 
 

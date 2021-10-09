@@ -98,5 +98,14 @@ namespace Battle
 
             return neighbors;
         }
+
+        /// <summary>
+        /// Calculates the manhattan distance between the two given GridSquares.
+        /// </summary>
+        /// <returns>The manhattan distance between the two given GridSquares.</returns>
+        public static int Distance(GridSquare a, GridSquare b)
+        {
+            return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+        }
     }
 }

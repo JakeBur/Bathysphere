@@ -51,7 +51,7 @@ namespace Battle
                 {
                     int buttonCount = 0;
 
-                    foreach(IBattleAction battleAction in playerCharacter.menuActions)
+                    foreach(PlayerAction battleAction in playerCharacter.menuActions)
                     {
                         Button button = Instantiate(buttonPrefab, buttonContainer).GetComponent<Button>();
                         button.GetComponentInChildren<TextMeshProUGUI>().text = battleAction.ToString();
@@ -73,7 +73,7 @@ namespace Battle
             canvas.gameObject.SetActive(buttons.Count > 0);
         }
 
-        private void HandleActionButtonPressed(IBattleAction battleAction)
+        private void HandleActionButtonPressed(PlayerAction battleAction)
         {
             (SelectionManager.Instance.selected as PlayerCharacter).PrimeMenuAction(battleAction);
         }

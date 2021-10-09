@@ -75,6 +75,8 @@ namespace Battle
 
                     Grid[x, y] = square.GetComponent<GridSquare>();
 
+                    gridSquare.name = $"{gridSquare.Position}";
+
                     gridSquare.OnClick += HandleClick;
                 }
             }
