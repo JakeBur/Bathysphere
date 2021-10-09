@@ -52,6 +52,7 @@ namespace Battle
         public void AddEntity(EncounterEntity encounterEntity)
         {
             entities.Add(encounterEntity);
+            EditorUtility.SetDirty(this);
             OnContentsUpdated?.Invoke();
         }
 
@@ -62,7 +63,8 @@ namespace Battle
                 AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(entity));
                 entities.Remove(entity);
             }
-
+            
+            EditorUtility.SetDirty(this);
             OnContentsUpdated?.Invoke();
         }
 

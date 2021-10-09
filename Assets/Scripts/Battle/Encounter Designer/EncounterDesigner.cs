@@ -143,7 +143,6 @@ namespace Battle
         {
             if (encounter.entities.Contains(entity))
             {
-                EditorUtility.SetDirty(entity);
 
                 Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
                 Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity);
@@ -199,8 +198,6 @@ namespace Battle
 
         private void HandleDragDrop(EntityData entity)
         {
-            EditorUtility.SetDirty(entity);
-
             Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
             Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity);
             GridSquare targetSquare = null;
