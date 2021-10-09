@@ -577,10 +577,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 2
-  test:
-    prefab: {fileID: 0}
-    position: {x: 0, y: 0}
-    icon: {fileID: 0}
 --- !u!4 &1280324944
 Transform:
   m_ObjectHideFlags: 0

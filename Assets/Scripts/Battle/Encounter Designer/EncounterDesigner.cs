@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEditor;
 using System;
 using System.Linq;
+using UnityEditor.SceneManagement;
 
 namespace Battle
 {
@@ -274,6 +275,30 @@ namespace Battle
             {
                 DestroyImmediate(entityDataPreview);
             }*/
+        }
+
+        public static EncounterDesigner FindEncounterDesigner(bool promptIfOutsideScene = false)
+        {
+            EncounterDesigner encounterDesigner = FindObjectOfType<EncounterDesigner>();
+
+
+            if (!encounterDesigner && promptIfOutsideScene)
+            {
+                bool openScene = EditorUtility.DisplayDialog("Open Encounter Designer?",
+                    "Would you like to open the Encounter Designer Scene to make changes to this Encounter?",
+                    "Open Scene", "Cancel");
+
+                if (openScene)
+                {
+
+                    EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+                    EditorSceneManager.OpenScene("Assets/Encounter Designer/EncounterDesigner.unity");
+                    
+                    encounterDesigner = FindObjectOfType<EncounterDesigner>();
+                }
+            }
+
+            return encounterDesigner;
         }
 
         public void SetEncounter(Encounter encounter)

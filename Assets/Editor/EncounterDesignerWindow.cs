@@ -187,6 +187,8 @@ public class EncounterDesignerWindow : EditorWindow
 
     private void BuildEncounterInfoBox(Encounter encounter)
     {
+        EncounterDesigner encounterDesigner = EncounterDesigner.FindEncounterDesigner();//
+
         VisualElement encounterInfoBox = rootVisualElement.Query<VisualElement>("encounter-info").First();
 
         selectedEncounter = encounter;
@@ -196,17 +198,12 @@ public class EncounterDesignerWindow : EditorWindow
         VisualElement gridSizeBox = rootVisualElement.Query<VisualElement>("grid-size-field").First();
         PropertyField gridSizeField = new PropertyField(serializedEncounter.FindProperty("gridSize"));
         gridSizeField.Bind(serializedEncounter);
-        /*gridSizeField.RegisterCallback<ChangeEvent<Vector2IntField>>(
-            (ChangeEvent<Vector2IntField> changeEvent) =>
-            {
-                Debug.Log("did this work?");
-            });*/
 
         gridSizeField.RegisterValueChangeCallback(
             (SerializedPropertyChangeEvent callback) =>
             {
                 encounter.gridSize = new Vector2Int(Mathf.Max(encounter.gridSize.x, 0), Mathf.Max(encounter.gridSize.y, 0));
-                GameObject.FindObjectOfType<EncounterDesigner>().Initialize();
+                if(encounterDesigner) encounterDesigner.Initialize();
             });
 
         gridSizeBox.Clear();
@@ -249,7 +246,8 @@ public class EncounterDesignerWindow : EditorWindow
 
     private void HandleEncounterButtonClick()
     {
-        GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>().SetEncounter(selectedEncounter);
+        EncounterDesigner.FindEncounterDesigner(true).SetEncounter(selectedEncounter);
+        //GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>();
     }
 
     private void HandleDragUpdate(DragUpdatedEvent dragUpdatedEvent)
