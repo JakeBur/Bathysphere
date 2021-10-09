@@ -65,7 +65,7 @@ public class EntityGizmo : MonoBehaviour
                 {
                     EncounterDesigner encounterDesigner = FindObjectOfType<EncounterDesigner>();
 
-                    if (encounterDesigner)
+                    if (encounterDesigner && encounterDesigner.encounter != null)
                     {
                         EncounterEntity encounterEntity = encounterDesigner.worldObjects.Keys.ToList()
                             .Find(key => encounterDesigner.worldObjects[key] == entityGizmo.gameObject);

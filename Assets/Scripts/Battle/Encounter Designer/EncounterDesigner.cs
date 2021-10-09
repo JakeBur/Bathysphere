@@ -14,8 +14,6 @@ namespace Battle
     {
         public static SerializedProperty dragDropItem;
 
-        public static EncounterDesigner Instance;
-
         public Encounter encounter;
 
         public GameObject battleSystems;
@@ -61,17 +59,23 @@ namespace Battle
         private void OnDestroy()
         {
             SceneView.duringSceneGui -= HandleSceneGUI;
-            encounter.OnContentsUpdated -= InitializeEntities;
+            if(encounter != null) encounter.OnContentsUpdated -= InitializeEntities;
         }
 
         private void Initialize()
         {
-            Instance = this;
+            BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
+
+            if (encounter == null)
+            {
+                CleanScene();
+                battleGridManager.UpdateSize(0, 0);
+                return;
+            }
 
             SceneView.duringSceneGui -= HandleSceneGUI;
             SceneView.duringSceneGui += HandleSceneGUI;
 
-            BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
             battleGridManager.UpdateSize(encounter.gridSize);
 
             InitializeEntities();
@@ -83,7 +87,7 @@ namespace Battle
         private void CleanScene()
         {
             FindObjectsOfType<Entity>().ToList().ForEach(entity => DestroyImmediate(entity.gameObject));
-            Destroy(FindObjectOfType<BattleManager>().gameObject);
+            if(Application.isPlaying) Destroy(FindObjectOfType<BattleManager>().gameObject);
         }
 
         private void InitializeEntities()

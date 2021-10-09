@@ -34,6 +34,12 @@ namespace Battle
 
         public void StartEncounter(Encounter encounter)
         {
+            if(encounter == null)
+            {
+                Debug.LogError("Ecounter Error: chosen encounter was null");
+                return;
+            }
+
             _encounter = encounter;
 
             BattleGridManager.Instance.InstantiateGrid(encounter.gridSize);
