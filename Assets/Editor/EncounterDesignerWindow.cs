@@ -11,6 +11,9 @@ public class EncounterDesignerWindow : EditorWindow
 {
     private static Encounter selectedEncounter;
     private static ListView entityList;
+    private static ListView encounterList;
+
+    private static Encounter[] encounters;
 
     [MenuItem("Tools/Encounter Designer")]
     public static void ShowWindow()
@@ -20,7 +23,17 @@ public class EncounterDesignerWindow : EditorWindow
         window.minSize = new Vector2(200, 200);
     }
 
-    private void FindAllEncounters(out Encounter[] encounters)
+    private void OnEnable()
+    {
+        VisualTreeAsset original = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/EncounterDesignerWindow.uxml");
+        TemplateContainer treeAsset = original.CloneTree();
+        rootVisualElement.Add(treeAsset);
+
+        BuildEncounterListView();
+        BuildEntityDataListView();
+    }
+
+    public static void FindAllEncounters(out Encounter[] encounters)
     {
         string[] guids = AssetDatabase.FindAssets("t:Encounter");
 
@@ -32,7 +45,7 @@ public class EncounterDesignerWindow : EditorWindow
         }
     }
 
-    private void FindAllEntityData(out EntityData[] entityData)
+    public static void FindAllEntityData(out EntityData[] entityData)
     {
         string[] guids = AssetDatabase.FindAssets("t:EntityData");
 
@@ -44,17 +57,27 @@ public class EncounterDesignerWindow : EditorWindow
         }
     }
 
+    public static void RefreshEncounterList()
+    {
+        FindAllEncounters(out encounters);
+        encounterList.itemsSource = encounters;
+        encounterList.Refresh();
+    }
+
     private void BuildEncounterListView()
     {
-        FindAllEncounters(out Encounter[] encounters);
+        FindAllEncounters(out encounters);
 
         Button addEncounterButton = rootVisualElement.Query<Button>("add-encounter-button").First();
         //here's where we can launch an add encounter window
-        addEncounterButton.clicked += () => Debug.Log("Add encounter button pressed");
+        addEncounterButton.clicked += () => EncounterCreatorWizard.ShowWindow();
 
-        ListView encounterList = rootVisualElement.Query<ListView>("encounter-list").First();
+        encounterList = rootVisualElement.Query<ListView>("encounter-list").First();
         encounterList.makeItem = () => new Label();
-        encounterList.bindItem = (element, i) => (element as Label).text = encounters[i].name;
+        encounterList.bindItem = (element, i) => 
+        {
+            (element as Label).text = encounters[i].name; 
+        };
 
         encounterList.itemsSource = encounters;
         encounterList.itemHeight = 16;
@@ -68,14 +91,32 @@ public class EncounterDesignerWindow : EditorWindow
             }
         };
 
+        // allow the user to delete encounters
+        encounterList.RegisterCallback<KeyDownEvent>(
+            (keyDownEvent) =>
+            {
+                if (keyDownEvent.keyCode == KeyCode.Delete)
+                {
+                    bool deleted = EditorUtility.DisplayDialog(
+                        "Delete Encounter",
+                        $"Are you sure you want to delete the encounter {(encounterList.selectedItem as Encounter).name}?",
+                            "Delete",
+                            "Cancel");
+                    
+                    if(deleted)
+                    {
+                        (encounterList.selectedItem as Encounter).Delete();
+                        RefreshEncounterList();
+                    }
+                }
+            });
+
         encounterList.Refresh();
     }
 
     private void BuildEntityDataListView()
     {
         FindAllEntityData(out EntityData[] entityData);
-        Debug.Log("building");
-        Debug.Log(entityData.Length);
 
         ListView entityDataList = rootVisualElement.Query<ListView>("entityData-list").First();
         entityDataList.makeItem = () => new Label();
@@ -256,13 +297,5 @@ public class EncounterDesignerWindow : EditorWindow
         DragAndDrop.StartDrag("EntityData");
     }
 
-    private void OnEnable()
-    {
-        VisualTreeAsset original = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/EncounterDesignerWindow.uxml");
-        TemplateContainer treeAsset = original.CloneTree();
-        rootVisualElement.Add(treeAsset);
-
-        BuildEncounterListView();
-        BuildEntityDataListView();
-    }
+    
 }

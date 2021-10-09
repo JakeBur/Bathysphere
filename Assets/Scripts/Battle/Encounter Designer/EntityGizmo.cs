@@ -53,8 +53,6 @@ public class EntityGizmo : MonoBehaviour
 
         EntityGizmo entityGizmo = this as EntityGizmo;
 
-        //Handles.Button(entityGizmo.transform.position, Quaternion.identity, 1, 1, );
-        //Handles.Label(entityGizmo.transform.position + Vector3.up * 3, "HI!");
         Handles.BeginGUI();
         {
             Vector2 position = HandleUtility.WorldToGUIPoint(entityGizmo.transform.position);

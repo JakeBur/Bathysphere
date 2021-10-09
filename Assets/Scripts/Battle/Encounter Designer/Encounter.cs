@@ -49,6 +49,30 @@ namespace Battle
             return createdEncounterEntity;
         }
 
+        public void Delete()
+        {
+            /*foreach(EncounterEntity entity in entities)
+            {
+                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(entity));
+            }*/
+            string encounterPath = AssetDatabase.GetAssetPath(this);
+
+            string[] pathElements = encounterPath.Split('/');
+
+            string folderPath = pathElements[0];
+
+            for(int i = 1; i < pathElements.Length - 1; i++)
+            {
+                folderPath += $"/{pathElements[i]}";
+            }
+
+            folderPath += $"/{pathElements[pathElements.Length - 1].Split('.')[0]} Entities";
+
+            FileUtil.DeleteFileOrDirectory(folderPath);
+
+            AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(this));
+        }
+
         public void AddEntity(EncounterEntity encounterEntity)
         {
             entities.Add(encounterEntity);
