@@ -62,7 +62,27 @@ namespace Battle
             if(encounter != null) encounter.OnContentsUpdated -= InitializeEntities;
         }
 
-        private void Initialize()
+        public static void PickUpEntity(SerializedProperty entity)
+        {
+            Debug.Log("picking up: " + entity);
+            dragDropItem = entity;
+        }
+
+        public static void PutDownEntity()
+        {
+            if (dragDropItem != null)
+            {
+                Debug.Log("putting down: " + dragDropItem);
+                dragDropItem = null;
+            }
+        }
+
+        public Vector2Int GetGridSize()
+        {
+            return battleSystems.GetComponent<BattleGridManager>().Grid.Size;
+        }
+
+        public void Initialize()
         {
             BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
 
@@ -258,7 +278,7 @@ namespace Battle
 
         public void SetEncounter(Encounter encounter)
         {
-            this.encounter.OnContentsUpdated -= InitializeEntities;
+            if(this.encounter != null) this.encounter.OnContentsUpdated -= InitializeEntities;
 
             this.encounter = encounter;
             Initialize();
@@ -269,24 +289,6 @@ namespace Battle
             PutDownEntity();
         }
 
-        public static void PickUpEntity(SerializedProperty entity)
-        {
-            Debug.Log("picking up: " + entity);
-            dragDropItem = entity;
-        }
         
-        public static void PutDownEntity()
-        {
-            if(dragDropItem != null)
-            {
-                Debug.Log("putting down: " + dragDropItem);
-                dragDropItem = null;
-            }
-        }
-
-        public Vector2Int GetGridSize()
-        {
-            return battleSystems.GetComponent<BattleGridManager>().Grid.Size;
-        }
     }
 }

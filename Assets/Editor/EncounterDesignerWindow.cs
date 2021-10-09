@@ -19,6 +19,8 @@ public class EncounterDesignerWindow : EditorWindow
     public static void ShowWindow()
     {
         EncounterDesignerWindow window = GetWindow<EncounterDesignerWindow>();
+        if(window != null) window.Close();
+        window = GetWindow<EncounterDesignerWindow>();
         window.titleContent = new GUIContent("Encounter Designer");
         window.minSize = new Vector2(200, 200);
     }
@@ -194,8 +196,22 @@ public class EncounterDesignerWindow : EditorWindow
         VisualElement gridSizeBox = rootVisualElement.Query<VisualElement>("grid-size-field").First();
         PropertyField gridSizeField = new PropertyField(serializedEncounter.FindProperty("gridSize"));
         gridSizeField.Bind(serializedEncounter);
+        /*gridSizeField.RegisterCallback<ChangeEvent<Vector2IntField>>(
+            (ChangeEvent<Vector2IntField> changeEvent) =>
+            {
+                Debug.Log("did this work?");
+            });*/
+
+        gridSizeField.RegisterValueChangeCallback(
+            (SerializedPropertyChangeEvent callback) =>
+            {
+                encounter.gridSize = new Vector2Int(Mathf.Max(encounter.gridSize.x, 0), Mathf.Max(encounter.gridSize.y, 0));
+                GameObject.FindObjectOfType<EncounterDesigner>().Initialize();
+            });
+
         gridSizeBox.Clear();
         gridSizeBox.Add(gridSizeField);
+
 
         // Entity list
         entityList = rootVisualElement.Query<ListView>("entity-list").First();
