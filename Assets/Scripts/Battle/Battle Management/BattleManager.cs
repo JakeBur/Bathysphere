@@ -38,7 +38,7 @@ namespace Battle
 
             BattleGridManager.Instance.InstantiateGrid(encounter.gridSize);
 
-            foreach (EncounterEntity encounterEntity in encounter.entities)//.Select(container => container.encounterEntity)
+            foreach (EncounterEntity encounterEntity in encounter.Entities)//.Select(container => container.encounterEntity)
             {
                 GameObject createdEntityObject = Instantiate(encounterEntity.EntityData.prefab);
                 Entity entity = createdEntityObject.GetComponent<Entity>();

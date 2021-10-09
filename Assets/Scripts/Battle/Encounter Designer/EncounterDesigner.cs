@@ -94,7 +94,7 @@ namespace Battle
             
             worldObjects = new Dictionary<EncounterEntity, GameObject>();
 
-            encounter.entities.ForEach(entity =>
+            encounter.Entities.ForEach(entity =>
             {
                 GameObject worldEntity = Instantiate(entity.EntityData.prefab);
                 worldEntity.AddComponent<EntityGizmo>();
@@ -141,7 +141,7 @@ namespace Battle
 
         private void HandleDragDrop(EncounterEntity entity)
         {
-            if (encounter.entities.Contains(entity))
+            if (encounter.Entities.Contains(entity))
             {
 
                 Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);

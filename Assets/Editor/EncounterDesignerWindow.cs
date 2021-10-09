@@ -73,10 +73,60 @@ public class EncounterDesignerWindow : EditorWindow
         addEncounterButton.clicked += () => EncounterCreatorWizard.ShowWindow();
 
         encounterList = rootVisualElement.Query<ListView>("encounter-list").First();
-        encounterList.makeItem = () => new Label();
+        encounterList.makeItem = () =>
+        {
+            VisualElement container = new VisualElement();
+            container.focusable = true;
+            container.pickingMode = PickingMode.Position;
+            
+            Label label = new Label();
+            label.name = "encounter-label";
+            container.Add(label);
+
+            TextField renameField = new TextField();
+            renameField.name = "rename-field";
+            renameField.visible = false;
+            container.Add(renameField);
+
+            return container;
+        };
         encounterList.bindItem = (element, i) => 
         {
-            (element as Label).text = encounters[i].name; 
+            Label label = element.Query<Label>("encounter-label");
+            TextField renameField = element.Query<TextField>("rename-field");
+
+            element.AddManipulator(new ContextualMenuManipulator(
+                (ContextualMenuPopulateEvent populateEvent) =>
+                {
+                    populateEvent.menu.AppendAction("Rename",
+                        (DropdownMenuAction action) =>
+                        {
+                            label.style.display = DisplayStyle.None;
+
+                            renameField.visible = true;
+                            renameField.value = label.text;
+                        });
+                }));
+
+            renameField.RegisterCallback<KeyDownEvent>((keyDownEvent) =>
+            {
+                if (keyDownEvent.keyCode == KeyCode.Return)
+                {
+                    encounters[i].Rename(renameField.value);
+                    
+                    label.style.display = DisplayStyle.Flex;
+                    label.text = renameField.value;
+                    renameField.visible = false;
+                }
+                else if(keyDownEvent.keyCode == KeyCode.Escape)
+                {
+                    label.style.display = DisplayStyle.Flex;
+                    label.text = renameField.value;
+                    renameField.visible = false;
+                }
+            });
+
+            element.Query<Label>("encounter-label").First().text = encounters[i].name;
         };
 
         encounterList.itemsSource = encounters;
@@ -152,13 +202,13 @@ public class EncounterDesignerWindow : EditorWindow
         entityList.makeItem = BuildEntityListing;
         entityList.bindItem = (element, i) =>
         {
-            if(i < encounter.entities.Count)
+            if(i < encounter.Entities.Count)
             {
-                BindEntityListing(element, encounter.entities[i]);
+                BindEntityListing(element, encounter.Entities[i]);
             }
         };
 
-        entityList.itemsSource = encounter.entities;
+        entityList.itemsSource = encounter.Entities;
         entityList.itemHeight = 32;
         entityList.selectionType = SelectionType.Single;
 
