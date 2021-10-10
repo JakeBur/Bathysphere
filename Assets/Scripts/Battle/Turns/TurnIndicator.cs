@@ -9,6 +9,7 @@ namespace Battle
         private void Start()
         {
             TurnManager.Instance.OnTurnAdvance += HandleTurnAdvance;
+            HandleTurnAdvance(TurnManager.Instance.CurrentEntry);
         }
 
         private void HandleTurnAdvance(ITurnOrderEntry turnOrderEntry)

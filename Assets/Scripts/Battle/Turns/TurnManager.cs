@@ -24,6 +24,15 @@ namespace Battle
         /// </summary>
         private List<ITurnOrderEntry> _turnOrder;
 
+        public ITurnOrderEntry CurrentEntry
+        {
+            get
+            {
+                if (_turnOrder != null && _turnOrder.Count > 0) return _turnOrder[0];
+                else return null;
+            }
+        }
+
         private void Awake()
         {
             Instance = this;
