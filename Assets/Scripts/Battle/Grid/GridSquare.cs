@@ -52,6 +52,7 @@ namespace Battle
         public void AddEntity(Entity entity)
         {
             Entities.Add(entity);
+            entity.OnRemovedFromPlay += RemoveEntity;
         }
 
         /// <summary>
@@ -60,6 +61,8 @@ namespace Battle
         /// <param name="entity">The Entity to remove.</param>
         public void RemoveEntity(Entity entity)
         {
+            entity.OnRemovedFromPlay -= RemoveEntity;
+
             if(Entities.Contains(entity))
             {
                 Entities.Remove(entity);
