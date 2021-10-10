@@ -87,6 +87,44 @@ namespace Battle
             return Entities.Count == 0;
         }
 
+        /// <summary>
+        /// Gets the neighboring GridSquare in the given cardinal direction.
+        /// </summary>
+        /// <param name="direction">The cardinal direction to check for a square to return.</param>
+        /// <returns>The adjacent GridSquare, or null if there is not an adjacent GridSquare in the given direction.</returns>
+        public GridSquare GetAdjacent(GridDirection direction)
+        {
+            Vector2Int positionDelta;
+
+            switch(direction)
+            {
+                case GridDirection.North:
+                    positionDelta = new Vector2Int(0, 1);
+                    break;
+                case GridDirection.South:
+                    positionDelta = new Vector2Int(0, -1);
+                    break;
+                case GridDirection.East:
+                    positionDelta = new Vector2Int(1, 0);
+                    break;
+                case GridDirection.West:
+                    positionDelta = new Vector2Int(-1, 0);
+                    break;
+                default:
+                    positionDelta = new Vector2Int(0, 0);
+                    break;
+            }
+
+            if (Grid.HasPosition(X + positionDelta.x, Y + positionDelta.y))
+            {
+                return Grid[X + positionDelta.x, Y + positionDelta.y];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public List<GridSquare> GetNeighbors()
         {
             List<GridSquare> neighbors = new List<GridSquare>();

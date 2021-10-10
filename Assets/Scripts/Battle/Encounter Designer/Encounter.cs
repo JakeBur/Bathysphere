@@ -21,6 +21,7 @@ namespace Battle
             }
         }
 
+        [SerializeField]
         private List<EncounterEntity> _entities;
 
         public EncounterEntity AddEntity(EntityData entityData, Vector2Int? position = null)

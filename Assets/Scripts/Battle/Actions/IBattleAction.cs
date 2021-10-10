@@ -11,6 +11,7 @@ namespace Battle
     public interface IBattleAction
     {
         bool CanApplyToSquare(GridSquare gridSquare);
+        bool CanTargetSquare(GridSquare gridSquare);
         void Apply(GridSquare gridSquare);
 
         List<GridSquare> FindThreatenedSquares();
@@ -24,7 +25,7 @@ namespace Battle
 
             foreach(GridSquare gridSquare in BattleGridManager.Instance.Grid.squares)
             {
-                if(battleAction.CanApplyToSquare(gridSquare))
+                if(battleAction.CanTargetSquare(gridSquare))
                 {
                     targetableSquares.Add(gridSquare);
 

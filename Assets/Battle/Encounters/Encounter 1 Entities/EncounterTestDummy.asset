@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f936dce3abf2b046b4c08b5e744ccd5, type: 3}
-  m_Name: EncounterKnight
+  m_Name: EncounterTestDummy
   m_EditorClassIdentifier: 
-  _position: {x: 0, y: 1}
-  _entityData: {fileID: 11400000, guid: 6a14260320721d6488b8a63cb1c7eb22, type: 2}
+  _position: {x: 4, y: 1}
+  _entityData: {fileID: 11400000, guid: 2ff837a0d594e934399319c35f9ca4a4, type: 2}

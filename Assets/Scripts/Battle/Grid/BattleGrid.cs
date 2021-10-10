@@ -53,6 +53,70 @@ namespace Battle
         }
 
         /// <summary>
+        /// Gets the cardinal direction pointing roughly from 'from' and pointing towards 'to.'
+        /// A bias can be optionally provided to break ties.
+        /// </summary>
+        /// <param name="from">The starting point for the direction.</param>
+        /// <param name="to">The endingpoint for the direction.</param>
+        /// <param name="bias">Bias value used to break ties. Defaults to GridDirection.East.</param>
+        /// <returns>The rough direction that does from 'from' to 'to.'</returns>
+        public GridDirection GetDirectionFromTo(GridSquare from, GridSquare to, GridDirection bias = GridDirection.East)
+        {
+            if (!Contains(from))
+            {
+                throw new Exception("GetDirectionFromTo Error: argument 'from' is not contained by the grid.");
+            }
+
+            if(!Contains(to))
+            {
+                throw new Exception("GetDirectionFromTo Error: argument 'to' is not contained by the grid.");
+            }
+
+            if(from == to)
+            {
+                Debug.LogWarning("Warning: GetDirectionFromTo arguments 'from' and 'to' are the same square, returning 'bias' argument value.");
+                return bias;
+            }
+
+            int horizontalDelta = to.X - from.X;
+            int verticalDelta = to.Y - from.Y;
+
+            bool useHorizontal = Math.Abs(horizontalDelta) > Math.Abs(verticalDelta);
+
+            if(Math.Abs(horizontalDelta) == Math.Abs(verticalDelta))
+            {
+                useHorizontal = bias == GridDirection.East || bias == GridDirection.West;
+            }
+
+            GridDirection result;
+
+            if(useHorizontal)
+            {
+                if(horizontalDelta > 0)
+                {
+                    result = GridDirection.East;
+                }
+                else
+                {
+                    result = GridDirection.West;
+                }
+            }
+            else
+            {
+                if (verticalDelta > 0)
+                {
+                    result = GridDirection.North;
+                }
+                else
+                {
+                    result = GridDirection.South;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Searches all GridSquares for entities and collects them in a List.
         /// </summary>
         /// <returns>A List of all Entities stored in the GridSquares of this Grid.</returns>

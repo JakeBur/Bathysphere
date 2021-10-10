@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f725ffe5b16427d4f80f604709b12e00, type: 3}
-  m_Name: Encounter 1
+  m_Script: {fileID: 11500000, guid: 30059baf7de6656408c7c1ed568f8a76, type: 3}
+  m_Name: TestDummy
   m_EditorClassIdentifier: 
-  gridSize: {x: 6, y: 3}
-  _entities:
-  - {fileID: 11400000, guid: 59d9bcb97cc46eb4b90f2497815dfbd2, type: 2}
-  - {fileID: 11400000, guid: d43d354e45e57984db4cb0d92f7168e3, type: 2}
+  prefab: {fileID: 2351783288649542242, guid: 5aece3fa482ad864fb258aa845815459, type: 3}
+  icon: {fileID: -1304905567622442630, guid: 9ab839f95280e1c44959dfea56ddb170, type: 3}

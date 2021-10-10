@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Battle
 {
@@ -13,6 +14,11 @@ namespace Battle
 
         public GameObject pathMarkerPrefab;
         public GameObject targetMarkerPrefab;
+
+        private void Start()
+        {
+            targets = GameObject.FindObjectsOfType<PlayerCharacter>().ToList();
+        }
 
         public override void Deselect()
         {

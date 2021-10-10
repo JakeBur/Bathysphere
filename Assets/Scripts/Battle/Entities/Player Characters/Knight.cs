@@ -1,15 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Battle
 {
     public class Knight : PlayerCharacter
     {
-        
-
-        
-
         protected override void InitializeMenuActions()
         {
             menuActions.Clear();
@@ -19,42 +16,91 @@ namespace Battle
 
         protected class Slash : PlayerAction
         {
-            private Knight player;
+            private Knight knight;
 
-            public Slash(Knight player)
+            public Slash(Knight knight)
             {
-                this.player = player;
+                this.knight = knight;
             }
 
             public override void Apply(GridSquare gridSquare)
             {
-                gridSquare.Entities.Find(entity => entity is IDamageable).GetComponent<IDamageable>().TakeDamage(1);
-                player.OnTurnEnd?.Invoke();
+                foreach(GridSquare affectedSquare in FindAffectedSquares(gridSquare))
+                {
+                    affectedSquare.Entities.Where(entity => entity is Enemy).ToList().ForEach(enemy => enemy.GetComponent<IDamageable>().TakeDamage(2));
+                }
+
+                knight.EndTurn();
             }
 
             public override bool CanApplyToSquare(GridSquare gridSquare)
             {
-                Entity targetEntity = gridSquare.Entities.Find(entity => entity is IDamageable);
+                bool atLeastOneEnemy = false;
 
-                return targetEntity is Enemy;
+                foreach (GridSquare affectedSquare in FindAffectedSquares(gridSquare))
+                {
+                    if(affectedSquare.Entities.Find(entity => entity is Enemy))
+                    {
+                        atLeastOneEnemy = true;
+                        break;
+                    }
+                }
+
+                return CanTargetSquare(gridSquare) && atLeastOneEnemy;
+            }
+
+            public override bool CanTargetSquare(GridSquare gridSquare)
+            {
+                return GridSquare.Distance(knight.Square, gridSquare) <= 2 && gridSquare != knight.Square;
             }
 
             public override void BeginPreview()
             {
-                //highlight all threatened squares
+                //highlight all targetable squares
+                Highlighter.Instance.moveHighlights.Highlight(this.FindTargetableSquares());
             }
             
             public override void UpdatePreview(GridSquare targetSquare)
             {
-                if(CanApplyToSquare(targetSquare))
+                Highlighter.Instance.playerAttackHighlights.Clear();
+                Highlighter.Instance.playerAttackGreyoutHighlights.Clear();
+
+                if (CanTargetSquare(targetSquare))
                 {
-                    // highlight aoe
+                    if(CanApplyToSquare(targetSquare))
+                    {
+                        Highlighter.Instance.playerAttackHighlights.Highlight(FindAffectedSquares(targetSquare));
+                    }
+                    else
+                    {
+                        Highlighter.Instance.playerAttackGreyoutHighlights.Highlight(FindAffectedSquares(targetSquare));
+                    }
                 }
             }
-            
+
+            private List<GridSquare> FindAffectedSquares(GridSquare targetSquare)
+            {
+                List<GridSquare> squares = new List<GridSquare>();
+
+                GridDirection forwardDirection = targetSquare.Grid.GetDirectionFromTo(knight.Square, targetSquare, GridDirection.East);
+
+                squares.Add(targetSquare);
+
+                GridSquare adjacentSquare = targetSquare.GetAdjacent(forwardDirection.RotateClockwise());
+                if(adjacentSquare) squares.Add(adjacentSquare);
+
+                adjacentSquare = targetSquare.GetAdjacent(forwardDirection.RotateCounterclockwise());
+                if (adjacentSquare) squares.Add(adjacentSquare);
+
+                return squares;
+            }
+
             public override void EndPreview()
             {
-                //he-highlight all threatened squares
+                //de-highlight all threatened squares
+                Highlighter.Instance.playerAttackGreyoutHighlights.Clear();
+                Highlighter.Instance.playerAttackHighlights.Clear();
+                Highlighter.Instance.moveHighlights.Clear();
             }
 
             public override List<GridSquare> FindThreatenedSquares()

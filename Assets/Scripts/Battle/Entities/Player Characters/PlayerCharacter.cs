@@ -32,10 +32,12 @@ namespace Battle
                 if(_primedAction != null)
                 {
                     _primedAction.EndPreview();
+                    BattleInputManager.Instance.OnHoverGridSquare -= _primedAction.UpdatePreview;
                 }
                 _primedAction = value;
                 if(_primedAction != null)
                 {
+                    BattleInputManager.Instance.OnHoverGridSquare += _primedAction.UpdatePreview;
                     _primedAction.BeginPreview();
                 }
             }
@@ -106,10 +108,16 @@ namespace Battle
 
         public override void StartTurn()
         {
-            if(SelectionManager.Instance.selected == this as ISelectable)
+            if (SelectionManager.Instance.selected == this as ISelectable)
             {
                 SelectionManager.Instance.Select(this);
             }
+        }
+
+        public override void EndTurn()
+        {
+            PrimedAction = null;
+            base.EndTurn();
         }
 
         private class Move : PlayerAction
@@ -124,7 +132,7 @@ namespace Battle
             public override void Apply(GridSquare gridSquare)
             {
                 player.Square = gridSquare;
-                player.OnTurnEnd?.Invoke();
+                player.EndTurn();
             }
 
             public override void BeginPreview()
@@ -135,6 +143,11 @@ namespace Battle
             public override bool CanApplyToSquare(GridSquare gridSquare)
             {
                 return gridSquare.Entities.Count == 0 && GridSquare.Distance(player.Square, gridSquare) <= player._moveSpeed;
+            }
+
+            public override bool CanTargetSquare(GridSquare gridSquare)
+            {
+                return CanApplyToSquare(gridSquare);
             }
 
             public override void EndPreview()

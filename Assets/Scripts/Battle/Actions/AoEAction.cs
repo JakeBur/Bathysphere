@@ -12,5 +12,6 @@ namespace Battle
         public abstract void UpdatePreview(GridSquare gridSquare);
         public abstract void EndPreview();
         public abstract List<GridSquare> FindThreatenedSquares();
+        public abstract bool CanTargetSquare(GridSquare gridSquare);
     }
 }

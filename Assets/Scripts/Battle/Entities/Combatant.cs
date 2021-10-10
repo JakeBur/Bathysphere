@@ -56,6 +56,11 @@ namespace Battle
 
         public abstract List<IBattleAction> GetPrimedActions();
         public abstract void StartTurn();
+        
+        public virtual void EndTurn()
+        {
+            OnTurnEnd?.Invoke();
+        }
     }
 }
 
