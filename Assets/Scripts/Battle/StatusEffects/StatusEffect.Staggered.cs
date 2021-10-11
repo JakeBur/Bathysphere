@@ -7,9 +7,9 @@ namespace Battle
 {
     public abstract partial class StatusEffect
     {
-        public class Stagger : StatusEffect
+        public class Staggered : StatusEffect
         {
-            public Stagger(Combatant combatant, int lifetime) : base(combatant, lifetime)
+            public Staggered(Combatant combatant, int lifetime) : base(combatant, lifetime)
             {
             }
 

@@ -13,6 +13,8 @@ namespace Battle
         protected Action OnEndTurn;
         protected Action<ITurnOrderEntry> OnRemovedFromPlay;
 
+        protected bool isIndefinite;
+
         public StatusEffect(Combatant target, int lifetime)
         {
             if(!TargetValid(target))
@@ -23,24 +25,37 @@ namespace Battle
             _target = target;
             _lifetime = lifetime;
 
-            _target.AddStartTurnListener(Update);
+            _target.AddStatusEffect(this);
         }
 
-        ~StatusEffect()
+        public StatusEffect(Combatant target)
         {
-            Debug.Log($"{this} with target {_target} destroyed with lifetime {_lifetime} left");
-        }
-
-        private void Update()
-        {
-            if (_lifetime <= 0)
+            if (!TargetValid(target))
             {
-                _target.RemoveEndTurnListener(Update);
+                return;
+            }
+
+            _target = target;
+            isIndefinite = true;
+
+            _target.AddStatusEffect(this);
+        }
+
+        public void Update()
+        {
+            if (!isIndefinite && _lifetime <= 0)
+            {
+                _target.RemoveStatusEffect(this);
                 return;
             }
 
             ApplyEffect();
             _lifetime--;
+        }
+
+        public void Clear()
+        {
+            _target.RemoveStatusEffect(this);
         }
 
         protected abstract void ApplyEffect();

@@ -11,7 +11,7 @@ namespace Battle
         protected class ThrowSword : KnightAction
         {
             [SerializeField]
-            private int _range;
+            protected int _range;
 
             [SerializeField]
             public GameObject _swordPrefab;
@@ -26,9 +26,26 @@ namespace Battle
 
             public override void Apply(GridSquare gridSquare)
             {
-                (_player as Knight)._knightSword = BattleManager.InstantiateEntity(_swordPrefab, gridSquare.Position) as KnightSword;
-                (_player as Knight).InitializeMenuActions();
-                (_player as Knight).InitializeComboActions();
+                _knight._knightSword = BattleManager.InstantiateEntity(_swordPrefab, gridSquare.Position) as KnightSword;
+                _knight.InitializeMenuActions();
+                _knight.InitializeComboActions();
+
+                // deal 2 damage to enemy at center
+                Enemy enemy = gridSquare.Entities.Find(entity => entity is Enemy) as Enemy;
+                if (enemy)
+                {
+                    enemy.TakeDamage(2);
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    enemy = gridSquare.GetAdjacent(GridDirection.North + i)?.Entities.Find(entity => entity is Enemy) as Enemy;
+
+                    if(enemy)
+                    {
+                        enemy.TakeDamage(1);
+                    }
+                }
             }
 
             public override void BeginPreview()
@@ -39,7 +56,9 @@ namespace Battle
 
             public override bool CanTargetSquare(GridSquare gridSquare)
             {
-                return gridSquare.Entities.Count == 0 && GridSquare.Distance(_player.Square, gridSquare) <= _range;
+                bool validTarget = gridSquare.Entities.Count == 0 || gridSquare.Entities.Find(entity => entity is Enemy) as Enemy != null;
+
+                return validTarget && GridSquare.Distance(_player.Square, gridSquare) <= _range;
             }
 
             public override void EndPreview()
@@ -53,6 +72,12 @@ namespace Battle
                 //throw new NotImplementedException();
                 List<GridSquare> squares = new List<GridSquare>();
                 squares.Add(gridSquare);
+                for (int i = 0; i < 4; i++)
+                {
+                    GridSquare square = gridSquare.GetAdjacent(GridDirection.North + i);
+                    if(square) squares.Add(square);
+                }
+
                 return squares;
             }
 

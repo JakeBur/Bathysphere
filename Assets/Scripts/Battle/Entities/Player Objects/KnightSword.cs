@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Battle
 {
@@ -8,9 +9,16 @@ namespace Battle
     {
         private Knight _knight;
 
+        protected StatusEffect.Pinned pinned;
+
         public void BindToKnight(Knight knight)
         {
             _knight = knight;
+        }
+
+        protected void OnDestroy()
+        {
+            pinned?.Clear();
         }
 
         public override void Select()
@@ -33,6 +41,18 @@ namespace Battle
         public override List<PlayerAction> GetAvailableComboActions(Entity entity)
         {
             throw new System.NotImplementedException();
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            Enemy enemy = Square.Entities.Find(entity => entity is Enemy) as Enemy;
+
+            if (enemy)
+            {
+                pinned = new StatusEffect.Pinned(enemy);
+            }
         }
 
         protected class TestAction : PlayerAction

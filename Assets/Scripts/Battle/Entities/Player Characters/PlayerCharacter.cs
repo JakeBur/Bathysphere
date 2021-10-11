@@ -50,8 +50,10 @@ namespace Battle
 
         private Move _moveAction;
 
-        protected void Awake()
+        protected new void Awake()
         {
+            base.Awake();
+
             menuActions = new List<PlayerAction>();
             comboActions = new Dictionary<Type, List<PlayerAction>>();
 

@@ -38,6 +38,7 @@ namespace Battle
                 return;
             }
 
+            
             List<List<GridSquare>> pathsToTargets = new List<List<GridSquare>>();
 
             foreach(PlayerCharacter target in targets)
@@ -58,6 +59,12 @@ namespace Battle
                 {
                     bestIndex = i;
                 }
+            }
+
+            if (_statusEffects.Find(effect => effect is StatusEffect.Pinned) != null && pathsToTargets[bestIndex].Count - 1 > 1)
+            {
+                OnEndTurn?.Invoke();
+                return;
             }
 
             GameObject targetMarker = Instantiate(targetMarkerPrefab);

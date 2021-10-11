@@ -62,6 +62,8 @@ namespace Battle
             return true;
         }
 
+        public virtual void Initialize() { }
+
         public abstract List<PlayerAction> GetAvailableMenuActions();
         public abstract List<PlayerAction> GetAvailableComboActions(Entity entity);
     }

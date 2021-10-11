@@ -17,7 +17,14 @@ namespace Battle
 
         public ActionPointTracker actionPoints;
 
+        protected List<StatusEffect> _statusEffects;
+
         private Action OnStartTurn;
+
+        protected void Awake()
+        {
+            _statusEffects = new List<StatusEffect>();
+        }
 
         protected void Start()
         {
@@ -60,6 +67,16 @@ namespace Battle
             OnEndTurn -= action;
         }
 
+        public void AddStatusEffect(StatusEffect statusEffect)
+        {
+            _statusEffects.Add(statusEffect);
+        }
+
+        public void RemoveStatusEffect(StatusEffect statusEffect)
+        {
+            _statusEffects.Remove(statusEffect);
+        }
+
         public virtual void TakeDamage(int damage)
         {
             health -= damage;
@@ -82,8 +99,9 @@ namespace Battle
         public void StartTurn()
         {
             actionPoints.Reset();
-            OnStartTurn?.Invoke();
+            _statusEffects.ForEach(effect => effect.Update());
             StartTurnBehavior();
+            OnStartTurn?.Invoke();
         }
 
         protected virtual void StartTurnBehavior() { }

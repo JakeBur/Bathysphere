@@ -76,6 +76,8 @@ namespace Battle
             entity.Square = BattleGridManager.Instance.Grid[x, y];
             TurnOrder.Add(entity as ITurnOrderEntry);
 
+            entity.Initialize();
+
             return entity;
         }
 

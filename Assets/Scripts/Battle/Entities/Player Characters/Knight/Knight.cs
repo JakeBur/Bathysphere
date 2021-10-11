@@ -34,6 +34,8 @@ namespace Battle
             knightSwordActions.Add(new RecoverSword(this, 1));
 
             comboActions.Add(typeof(KnightSword), knightSwordActions);
+
+            List<PlayerAction> enemyActions = new List<PlayerAction>();
         }
     }
 }
