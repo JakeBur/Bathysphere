@@ -7,6 +7,8 @@ namespace Battle
 {
     public partial class Knight : PlayerCharacter
     {
+        public GameObject knightSwordPrefab;
+
         protected KnightSword _knightSword;
         
         protected override void InitializeMenuActions()
@@ -15,7 +17,7 @@ namespace Battle
 
             if(_knightSword == null)
             {
-                menuActions.Add(new ThrowSword(this, 2, 2));
+                menuActions.Add(new ThrowSword(this, 2, 2, knightSwordPrefab));
                 menuActions.Add(new Slash(this, 2, 2));
             }
             else

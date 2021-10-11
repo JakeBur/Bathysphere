@@ -30,7 +30,8 @@ namespace Battle
 
         private void Awake()
         {
-            if(Application.isPlaying)
+
+            if (Application.isPlaying)
             {
                 CleanScene();
                 GameObject battleSystems = Instantiate(battleSystemsPrefab);

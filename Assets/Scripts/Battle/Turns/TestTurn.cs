@@ -50,4 +50,14 @@ public class TestTurn : MonoBehaviour, Battle.ITurnOrderEntry
     {
         throw new NotImplementedException();
     }
+
+    public void AddStartTurnListener(Action action)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RemoveStartTurnListener(Action action)
+    {
+        throw new NotImplementedException();
+    }
 }

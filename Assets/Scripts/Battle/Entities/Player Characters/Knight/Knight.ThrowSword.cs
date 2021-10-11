@@ -16,8 +16,9 @@ namespace Battle
             [SerializeField]
             public GameObject _swordPrefab;
 
-            public ThrowSword(Knight knight, int cost, int range) : base(knight, cost)
+            public ThrowSword(Knight knight, int cost, int range, GameObject swordPrefab) : base(knight, cost)
             {
+                _swordPrefab = swordPrefab;
                 _range = range;
             }
 

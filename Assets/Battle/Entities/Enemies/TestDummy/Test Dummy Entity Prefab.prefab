@@ -126,6 +126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 3
+  actionPoints:
+    _maxPoints: 2
   targets: []
   pathMarkerPrefab: {fileID: 312086741397359512, guid: f0fb0a2b270f65b4aa36f092b6a22e73,
     type: 3}

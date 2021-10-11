@@ -37,6 +37,15 @@ namespace Battle
                 }
             }
 
+            public void Highlight(GridSquare gridSquare)
+            {
+                if (_highlights == null) _highlights = new List<GameObject>();
+
+                GameObject highlight = Instantiate(_highlightPrefab, Instance.transform);
+                highlight.transform.position = gridSquare.transform.position;
+                _highlights.Add(highlight);
+            }
+
             public void Clear()
             {
                 if (_highlights == null) return;

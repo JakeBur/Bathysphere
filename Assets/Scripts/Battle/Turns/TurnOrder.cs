@@ -8,9 +8,9 @@ namespace Battle
     /// <summary>
     /// Manager that allows a variety of ITurnOrderEntries to control the game state sequentially.
     /// </summary>
-    public class TurnManager : MonoBehaviour
+    public class TurnOrder : MonoBehaviour
     {
-        public static TurnManager Instance;
+        public static TurnOrder Instance;
 
         /// <summary>
         /// Invoked when the turn is advanced.
@@ -42,26 +42,51 @@ namespace Battle
         /// <summary>
         /// Starts the turn of the fist ITurnOrderEntry in the order.
         /// </summary>
-        public void StartTurnOrder()
+        public static void StartTurnOrder()
         {
-            _turnOrder[0].StartTurn();
+            Instance._turnOrder[0].StartTurn();
         }
 
         /// <summary>
-        /// Adds the given ITurnOrderEntry to the turn order.
+        /// Adds the given ITurnOrderEntry to the end of the turn order.
         /// </summary>
         /// <param name="entry">The ITurnOrderEntry to add.</param>
-        public void AddTurnOrderEntry(ITurnOrderEntry entry)
+        public static void Add(ITurnOrderEntry entry)
         {
             if (entry == null) return;
 
             // listen for when the entry yields game state control back to us
-            entry.AddEndTurnListener(AdvanceTurn);
+            entry.AddEndTurnListener(Instance.AdvanceTurn);
 
             // listen for when the entry is removed from play so that we don't continue to try to execute it.
-            entry.AddRemovedFromPlayListener(RemoveTurnOrderEntry);
+            entry.AddRemovedFromPlayListener(Instance.Remove);
 
-            _turnOrder.Add(entry);
+            Instance._turnOrder.Add(entry);
+        }
+
+        /// <summary>
+        /// Inserts the turn order entry before the given index. Values for index less than 1 are treated as 1.
+        /// </summary>
+        /// <param name="index">The index to insert at.</param>
+        /// <param name="entry">The ITurnOrderEntry to add.</param>
+        public static void Insert(int index, ITurnOrderEntry entry)
+        {
+            if (entry == null) return;
+
+            // listen for when the entry yields game state control back to us
+            entry.AddEndTurnListener(Instance.AdvanceTurn);
+
+            // listen for when the entry is removed from play so that we don't continue to try to execute it.
+            entry.AddRemovedFromPlayListener(Instance.Remove);
+
+            if(index < Instance._turnOrder.Count)
+            {
+                Instance._turnOrder.Insert(Math.Min(index, 1), entry);
+            }
+            else
+            {
+                Instance._turnOrder.Add(entry);
+            }
         }
 
         /// <summary>
@@ -78,7 +103,7 @@ namespace Battle
         /// Removes the given ITurnOrderEntry from the turn order.
         /// </summary>
         /// <param name="entry">The entry to remove.</param>
-        private void RemoveTurnOrderEntry(ITurnOrderEntry entry)
+        private void Remove(ITurnOrderEntry entry)
         {
             _turnOrder.Remove(entry);
         }

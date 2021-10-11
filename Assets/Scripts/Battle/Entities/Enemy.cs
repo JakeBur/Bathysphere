@@ -30,10 +30,13 @@ namespace Battle
         {
         }
 
-        public override void StartTurn()
+        protected override void StartTurnBehavior()
         {
-            base.StartTurn();
-            Debug.Log("Starting enemy turn");
+            if(actionPoints.CurrentPoints < 2)
+            {
+                OnEndTurn?.Invoke();
+                return;
+            }
 
             List<List<GridSquare>> pathsToTargets = new List<List<GridSquare>>();
 

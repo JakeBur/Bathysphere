@@ -17,6 +17,8 @@ namespace Battle
 
         public ActionPointTracker actionPoints;
 
+        private Action OnStartTurn;
+
         protected void Start()
         {
             // try to execute actions when a square on the grid is clicked
@@ -77,15 +79,22 @@ namespace Battle
             Destroy(gameObject);
         }
 
-        public virtual void StartTurn()
+        public void StartTurn()
         {
             actionPoints.Reset();
+            OnStartTurn?.Invoke();
+            StartTurnBehavior();
         }
-        
-        public virtual void EndTurn()
+
+        protected virtual void StartTurnBehavior() { }
+
+        public void EndTurn()
         {
+            EndTurnBehavior();
             OnEndTurn?.Invoke();
         }
+
+        protected virtual void EndTurnBehavior() { }
 
         public virtual bool ApplyAction(CombatantAction combatantAction, GridSquare targetSquare)
         {
@@ -97,6 +106,16 @@ namespace Battle
             }
 
             return false;
+        }
+
+        public void AddStartTurnListener(Action action)
+        {
+            OnStartTurn += action;
+        }
+
+        public void RemoveStartTurnListener(Action action)
+        {
+            OnStartTurn -= action;
         }
     }
 }

@@ -20,6 +20,18 @@ namespace Battle
     public interface ITurnOrderEntry
     {
         /// <summary>
+        /// Adds a listener to the start turn event, which will be called when this TurnOrderEntry begins its turn, after its initialization function is called.
+        /// </summary>
+        /// <param name="action">The action to subscribe.</param>
+        void AddStartTurnListener(Action action);
+
+        /// <summary>
+        /// Removes a listener to the start turn event.
+        /// </summary>
+        /// <param name="action">The action to unsubscribe.</param>
+        void RemoveStartTurnListener(Action action);
+
+        /// <summary>
         /// Adds a listener to the end turn event, which will be called when this TurnOrderEntry is done with its behavior.
         /// </summary>
         /// <param name="action">The action to subscribe.</param>
@@ -51,7 +63,7 @@ namespace Battle
         /// <returns>True if this entry is being executed, false otherwise.</returns>
         public static bool TurnActive(this ITurnOrderEntry entry)
         {
-            return TurnManager.Instance.TurnOrderEntryIsActive(entry);
+            return TurnOrder.Instance.TurnOrderEntryIsActive(entry);
         }
     }
 

@@ -49,7 +49,7 @@ namespace Battle
                 InstantiateEntity(encounterEntity);
             }
 
-            TurnManager.Instance.StartTurnOrder();
+            TurnOrder.StartTurnOrder();
         }
 
         public static Entity InstantiateEntity(GameObject prefab, Vector2Int position)
@@ -74,7 +74,7 @@ namespace Battle
             entity.OnRemovedFromPlay += Instance.HandleEntityRemovedFromPlay;
 
             entity.Square = BattleGridManager.Instance.Grid[x, y];
-            TurnManager.Instance.AddTurnOrderEntry(entity as ITurnOrderEntry);
+            TurnOrder.Add(entity as ITurnOrderEntry);
 
             return entity;
         }

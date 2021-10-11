@@ -26,7 +26,7 @@ namespace Battle
         void Start()
         {
             SelectionManager.Instance.OnSelect += HandleSelect;
-            TurnManager.Instance.OnTurnAdvance += (ITurnOrderEntry entry) => HandleSelect(SelectionManager.Instance.selected);
+            TurnOrder.Instance.OnTurnAdvance += (ITurnOrderEntry entry) => HandleSelect(SelectionManager.Instance.selected);
         }
 
         // Update is called once per frame
@@ -43,7 +43,7 @@ namespace Battle
             buttons.ForEach(button => Destroy(button.gameObject));
             buttons.Clear();
 
-            ITurnOrderEntry currentTurnOrderEntry = TurnManager.CurrentEntry;
+            ITurnOrderEntry currentTurnOrderEntry = TurnOrder.CurrentEntry;
             PlayerCharacter playerCharacter = currentTurnOrderEntry as PlayerCharacter;
 
             if(playerCharacter)

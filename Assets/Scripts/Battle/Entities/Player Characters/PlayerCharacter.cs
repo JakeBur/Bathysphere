@@ -74,7 +74,23 @@ namespace Battle
         {
             if(this.TurnActive())
             {
-                return menuActions;
+                List<PlayerAction> actions = new List<PlayerAction>(menuActions);
+
+                // clean out any unapplicable actions
+                // TODO maybe we can have greyed out actions as an option with a hover that says what the requirements are
+                for (int i = actions.Count - 1; i >= 0; i--)
+                {
+                    if (actions[i].IsInstant && !actions[i].CanApplyToSquare(null))
+                    {
+                        actions.RemoveAt(i);
+                    }
+                    else if(actions[i].CalculateCost(null) > actionPoints.CurrentPoints)
+                    {
+                        actions.RemoveAt(i);
+                    }
+                }
+
+                return actions;
             }
 
             return new List<PlayerAction>();
@@ -86,7 +102,7 @@ namespace Battle
 
             if (comboActions.ContainsKey(type))
             {
-                List<PlayerAction> actions = comboActions[type];
+                List<PlayerAction> actions = new List<PlayerAction>(comboActions[type]);
 
                 // clean out any unapplicable actions
                 // TODO maybe we can have greyed out actions as an option with a hover that says what the requirements are
@@ -144,20 +160,17 @@ namespace Battle
             PrimedAction = null;
         }
 
-        public override void StartTurn()
+        protected override void StartTurnBehavior()
         {
-            base.StartTurn();
-
             if (SelectionManager.Instance.selected == this as ISelectable)
             {
                 SelectionManager.Instance.Select(this);
             }
         }
 
-        public override void EndTurn()
+        protected override void EndTurnBehavior()
         {
             PrimedAction = null;
-            base.EndTurn();
         }
 
         public override bool ApplyAction(CombatantAction combatantAction, GridSquare targetSquare)

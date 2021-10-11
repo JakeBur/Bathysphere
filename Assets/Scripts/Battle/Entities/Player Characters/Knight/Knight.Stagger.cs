@@ -23,26 +23,17 @@ namespace Battle
 
             public override void Apply(GridSquare gridSquare)
             {
-                foreach (GridSquare affectedSquare in FindThreatenedSquaresAtTarget(gridSquare))
+                Enemy enemy = gridSquare.Entities.Find(entity => entity is Enemy) as Enemy;
+
+                if (enemy)
                 {
-                    affectedSquare.Entities.Where(entity => entity is Enemy).ToList().ForEach(enemy => enemy.GetComponent<IDamageable>().TakeDamage(2));
+                    new StatusEffect.Stagger(enemy, 1);
                 }
             }
 
             public override bool CanApplyToSquare(GridSquare gridSquare)
             {
-                bool atLeastOneEnemy = false;
-
-                foreach (GridSquare affectedSquare in FindThreatenedSquaresAtTarget(gridSquare))
-                {
-                    if (affectedSquare.Entities.Find(entity => entity is Enemy))
-                    {
-                        atLeastOneEnemy = true;
-                        break;
-                    }
-                }
-
-                return base.CanApplyToSquare(gridSquare) && CanTargetSquare(gridSquare) && atLeastOneEnemy;
+                return base.CanApplyToSquare(gridSquare) && CanTargetSquare(gridSquare) && gridSquare.Entities.Find(entity => entity is Enemy) as Enemy != null;
             }
 
             public override bool CanTargetSquare(GridSquare gridSquare)
@@ -65,11 +56,11 @@ namespace Battle
                 {
                     if (CanApplyToSquare(targetSquare))
                     {
-                        Highlighter.Instance.playerAttackHighlights.Highlight(FindThreatenedSquaresAtTarget(targetSquare));
+                        Highlighter.Instance.playerAttackHighlights.Highlight(targetSquare);
                     }
                     else
                     {
-                        Highlighter.Instance.playerAttackGreyoutHighlights.Highlight(FindThreatenedSquaresAtTarget(targetSquare));
+                        Highlighter.Instance.playerAttackGreyoutHighlights.Highlight(targetSquare);
                     }
                 }
             }
@@ -86,16 +77,8 @@ namespace Battle
             {
                 List<GridSquare> squares = new List<GridSquare>();
 
-                GridDirection forwardDirection = gridSquare.Grid.GetDirectionFromTo(knight.Square, gridSquare, GridDirection.East);
-
                 squares.Add(gridSquare);
-
-                GridSquare adjacentSquare = gridSquare.GetAdjacent(forwardDirection.RotateClockwise());
-                if (adjacentSquare) squares.Add(adjacentSquare);
-
-                adjacentSquare = gridSquare.GetAdjacent(forwardDirection.RotateCounterclockwise());
-                if (adjacentSquare) squares.Add(adjacentSquare);
-
+                
                 return squares;
             }
         }
