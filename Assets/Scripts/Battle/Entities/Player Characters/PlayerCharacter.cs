@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Battle
 {
@@ -16,6 +17,8 @@ namespace Battle
         /// List of actions that should appear in the contextual action menu when this PlayerCharacter is selected.
         /// </summary>
         public List<PlayerAction> menuActions;
+
+        public Dictionary<Type, List<PlayerAction>> comboActions;
 
         /// <summary>
         /// The currently primed action, to be supplied when GetPrimedActions() is called.
@@ -50,10 +53,12 @@ namespace Battle
         protected void Awake()
         {
             menuActions = new List<PlayerAction>();
+            comboActions = new Dictionary<Type, List<PlayerAction>>();
 
             _moveAction = new Move(this, 1);
 
             InitializeMenuActions();
+            InitializeComboActions();
         }
 
         protected new void Start()
@@ -63,26 +68,56 @@ namespace Battle
         }
 
         protected abstract void InitializeMenuActions();
+        protected abstract void InitializeComboActions();
 
-        public override List<IBattleAction> GetAvailableMenuActions()
+        public override List<PlayerAction> GetAvailableMenuActions()
         {
-            List<IBattleAction> actions = new List<IBattleAction>();
             if(this.TurnActive())
             {
-                if(PrimedAction != null) actions.Add(PrimedAction);
-                //actions.Add(new Move(this));
+                return menuActions;
             }
 
-            return actions;
+            return new List<PlayerAction>();
+        }
+
+        public override List<PlayerAction> GetAvailableComboActions(Entity entity)
+        {
+            Type type = entity.GetType();
+
+            if (comboActions.ContainsKey(type))
+            {
+                List<PlayerAction> actions = comboActions[type];
+
+                // clean out any unapplicable actions
+                // TODO maybe we can have greyed out actions as an option with a hover that says what the requirements are
+                for(int i = actions.Count - 1; i >= 0; i--)
+                {
+                    if(actions[i].IsInstant && !actions[i].CanApplyToSquare(null))
+                    {
+                        actions.RemoveAt(i);
+                    }
+                }
+
+                return actions;
+            }
+
+            return new List<PlayerAction>();
         }
 
         /// <summary>
         /// Primes the given IBattleAction if its contained in the character's menu actions.
         /// </summary>
         /// <param name="action"></param>
-        public void PrimeMenuAction(PlayerAction action)
+        public void PrimeAction(PlayerAction action)
         {
-            if(menuActions.Contains(action))
+            if(action.IsInstant)
+            {
+                if(action.CanApplyToSquare(null))
+                {
+                    ApplyAction(action, null);
+                }
+            }
+            else
             {
                 PrimedAction = action;
             }
@@ -99,13 +134,13 @@ namespace Battle
 
         public override void Select()
         {
-            BattleGridManager.Instance.OnSquareClicked.AddListener(TryExecuteAction, 1);
+            BattleGridManager.Instance.OnSquareClicked.AddListener(TryApplyAction, 1);
             PrimedAction = _moveAction;
         }
 
         public override void Deselect()
         {
-            BattleGridManager.Instance.OnSquareClicked.RemoveListener(TryExecuteAction);
+            BattleGridManager.Instance.OnSquareClicked.RemoveListener(TryApplyAction);
             PrimedAction = null;
         }
 
@@ -139,18 +174,21 @@ namespace Battle
             return success;
         }
 
-        protected void TryExecuteAction(GridSquare square, PriorityEvent<GridSquare> context)
+        protected void TryApplyAction(GridSquare square, PriorityEvent<GridSquare> context)
         {
             if (PrimedAction == null) return;
 
             if (PrimedAction.CanApplyToSquare(square))
             {
                 ApplyAction(PrimedAction, square);
+                PrimedAction = null;
 
                 // if we could do something, consume the event
                 context.ConsumeEvent();
             }
         }
+
+        
 
         private class Move : PlayerAction
         {
@@ -158,6 +196,8 @@ namespace Battle
             {
 
             }
+
+            //public override bool IsInstant() => false;
 
             public override int CalculateCost(GridSquare targetSquare)
             {
@@ -199,11 +239,6 @@ namespace Battle
                 Highlighter.Instance.pathHighlights.Clear();
             }
 
-            public override List<GridSquare> FindThreatenedSquares()
-            {
-                return this.FindTargetableSquares();
-            }
-
             public override void UpdatePreview(GridSquare gridSquare)
             {
                 Highlighter.Instance.pathHighlights.Clear();
@@ -215,6 +250,11 @@ namespace Battle
                     Highlighter.Instance.pathHighlights.Highlight(path);
                 }
 
+            }
+
+            public override List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare gridSquare)
+            {
+                return new List<GridSquare>();
             }
         }
     }

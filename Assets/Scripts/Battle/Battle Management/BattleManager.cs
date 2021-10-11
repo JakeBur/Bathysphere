@@ -46,21 +46,48 @@ namespace Battle
 
             foreach (EncounterEntity encounterEntity in encounter.Entities)//.Select(container => container.encounterEntity)
             {
-                GameObject createdEntityObject = Instantiate(encounterEntity.EntityData.prefab);
-                Entity entity = createdEntityObject.GetComponent<Entity>();
-                entities.Add(entity);
-                entity.OnRemovedFromPlay += HandleEntityRemovedFromPlay;
-                entity.Square = BattleGridManager.Instance.Grid[encounterEntity.Position.x, encounterEntity.Position.y];
-                TurnManager.Instance.AddTurnOrderEntry(entity as ITurnOrderEntry);
+                InstantiateEntity(encounterEntity);
             }
 
             TurnManager.Instance.StartTurnOrder();
         }
 
+        public static Entity InstantiateEntity(GameObject prefab, Vector2Int position)
+        {
+            return InstantiateEntity(prefab, position.x, position.y);
+        }
+
+        public static Entity InstantiateEntity(GameObject prefab, int x, int y)
+        {
+            GameObject createdEntityObject = Instantiate(prefab);
+
+            Entity entity = createdEntityObject.GetComponent<Entity>();
+
+            if(entity == null)
+            {
+                Destroy(createdEntityObject);
+                Debug.Log("InstantiateEntity Error: provided prefab is not an Entity. Aborting instantiation");
+                return null;
+            }
+
+            Instance.entities.Add(entity);
+            entity.OnRemovedFromPlay += Instance.HandleEntityRemovedFromPlay;
+
+            entity.Square = BattleGridManager.Instance.Grid[x, y];
+            TurnManager.Instance.AddTurnOrderEntry(entity as ITurnOrderEntry);
+
+            return entity;
+        }
+
+        public static Entity InstantiateEntity(EncounterEntity encounterEntity)
+        {
+            return InstantiateEntity(encounterEntity.EntityData.prefab, encounterEntity.Position);
+        }
+
         private void HandleEntityRemovedFromPlay(Entity entity)
         {
             entities.Remove(entity);
-
+         
             if(new AllPlayersDefeated().Met(this))
             {
                 Debug.Log("Defeat!");

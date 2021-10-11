@@ -13,7 +13,16 @@ namespace Battle
         void Select();
         void Deselect();
 
-        public List<IBattleAction> GetAvailableMenuActions();
+        /// <summary>
+        /// Gets all IBattleActions that this selectable can currently perform.
+        /// </summary>
+        public List<PlayerAction> GetAvailableMenuActions();
+
+        /// <summary>
+        /// Gets all IBattleActions that the current selectable can perform with the given Entity as a target.
+        /// </summary>
+        /// <param name="entity">The target entity.</param>
+        public List<PlayerAction> GetAvailableComboActions(Entity entity);
 
         bool IsSelectable();
     }

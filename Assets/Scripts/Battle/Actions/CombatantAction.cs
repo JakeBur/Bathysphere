@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Battle
 {
-    public abstract class CombatantAction : IBattleAction
+    public abstract class CombatantAction : BattleAction
     {
-        protected int _cost;
+        [SerializeField]
+        public int _cost;
+
         protected Combatant _combatant;
 
         public CombatantAction(Combatant combatant, int cost)
@@ -20,9 +23,7 @@ namespace Battle
             _combatant.actionPoints.TryConsumePoints(CalculateCost(gridSquare));
         }*/
 
-        public abstract void Apply(GridSquare gridSquare);
-
-        public virtual bool CanApplyToSquare(GridSquare gridSquare)
+        public override bool CanApplyToSquare(GridSquare gridSquare)
         {
             return _combatant.actionPoints.CanConsumePoints(_cost);
         }
@@ -31,8 +32,5 @@ namespace Battle
         {
             return _cost;
         }
-
-        public abstract bool CanTargetSquare(GridSquare gridSquare);
-        public abstract List<GridSquare> FindThreatenedSquares();
     }
 }

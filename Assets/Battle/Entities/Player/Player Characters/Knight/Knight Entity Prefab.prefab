@@ -48,6 +48,13 @@ MonoBehaviour:
   actionPoints:
     _maxPoints: 4
   _moveSpeed: 1
+  _slash:
+    _cost: 2
+  _throwSword:
+    _cost: 2
+    _range: 3
+    _swordPrefab: {fileID: 145688876222621897, guid: a0a76de4dabe30d4cb7c16cd2da556b4,
+      type: 3}
 --- !u!1001 &2880893838225597567
 PrefabInstance:
   m_ObjectHideFlags: 0

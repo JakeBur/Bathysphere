@@ -43,39 +43,35 @@ namespace Battle
             buttons.ForEach(button => Destroy(button.gameObject));
             buttons.Clear();
 
-            if(selectable is PlayerCharacter)
+            ITurnOrderEntry currentTurnOrderEntry = TurnManager.CurrentEntry;
+            PlayerCharacter playerCharacter = currentTurnOrderEntry as PlayerCharacter;
+
+            if(playerCharacter)
             {
-                PlayerCharacter playerCharacter = selectable as PlayerCharacter;
-
-                if (playerCharacter.TurnActive())
+                foreach (PlayerAction playerAction in selectable.GetAvailableMenuActions())
                 {
-                    int buttonCount = 0;
+                    CreateActionButton(playerCharacter, playerAction);
+                }
 
-                    foreach(PlayerAction battleAction in playerCharacter.menuActions)
-                    {
-                        Button button = Instantiate(buttonPrefab, buttonContainer).GetComponent<Button>();
-                        button.GetComponentInChildren<TextMeshProUGUI>().text = battleAction.ToString();
-                        
-                        RectTransform buttonTransform = button.GetComponent<RectTransform>();
-                       
-                        /*buttonTransform.anchoredPosition = new Vector2(
-                            buttonTransform.anchoredPosition.x,
-                            buttonYOffset + (buttonCount * buttonSpacing) + buttonTransform.sizeDelta.y);*/
-
-                        button.onClick.AddListener(() => HandleActionButtonPressed(battleAction));
-
-                        buttons.Add(button);
-                        buttonCount++;
-                    }
+                foreach(PlayerAction playerAction in playerCharacter.GetAvailableComboActions(selectable as Entity))
+                {
+                    CreateActionButton(playerCharacter, playerAction);
                 }
             }
 
             canvas.gameObject.SetActive(buttons.Count > 0);
         }
 
-        private void HandleActionButtonPressed(PlayerAction battleAction)
+        private void CreateActionButton(PlayerCharacter playerCharacter, PlayerAction playerAction)
         {
-            (SelectionManager.Instance.selected as PlayerCharacter).PrimeMenuAction(battleAction);
+            Button button = Instantiate(buttonPrefab, buttonContainer).GetComponent<Button>();
+            button.GetComponentInChildren<TextMeshProUGUI>().text = playerAction.ToString();
+
+            RectTransform buttonTransform = button.GetComponent<RectTransform>();
+
+            button.onClick.AddListener(() => playerCharacter.PrimeAction(playerAction));
+
+            buttons.Add(button);
         }
     }
 }

@@ -24,11 +24,11 @@ namespace Battle
         /// </summary>
         private List<ITurnOrderEntry> _turnOrder;
 
-        public ITurnOrderEntry CurrentEntry
+        public static ITurnOrderEntry CurrentEntry
         {
             get
             {
-                if (_turnOrder != null && _turnOrder.Count > 0) return _turnOrder[0];
+                if (Instance._turnOrder != null && Instance._turnOrder.Count > 0) return Instance._turnOrder[0];
                 else return null;
             }
         }
@@ -53,6 +53,8 @@ namespace Battle
         /// <param name="entry">The ITurnOrderEntry to add.</param>
         public void AddTurnOrderEntry(ITurnOrderEntry entry)
         {
+            if (entry == null) return;
+
             // listen for when the entry yields game state control back to us
             entry.AddEndTurnListener(AdvanceTurn);
 

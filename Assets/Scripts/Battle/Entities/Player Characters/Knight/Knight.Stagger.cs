@@ -2,35 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace Battle
 {
-    public class Knight : PlayerCharacter
+    public partial class Knight
     {
-        public override List<IBattleAction> GetAvailableMenuActions()
+        [Serializable]
+        protected class Stagger : PlayerAction
         {
-            throw new System.NotImplementedException();
-        }
+            private int _range;
 
-        protected override void InitializeMenuActions()
-        {
-            menuActions.Clear();
-
-            menuActions.Add(new Slash(this, 2));
-        }
-
-        protected class Slash : PlayerAction
-        {
             private Knight knight;
 
-            public Slash(Knight knight, int cost) : base(knight, cost)
+            public Stagger(Knight knight, int cost, int range) : base(knight, cost)
             {
                 this.knight = knight;
+                _range = range;
             }
 
             public override void Apply(GridSquare gridSquare)
             {
-                foreach(GridSquare affectedSquare in FindAffectedSquares(gridSquare))
+                foreach (GridSquare affectedSquare in FindThreatenedSquaresAtTarget(gridSquare))
                 {
                     affectedSquare.Entities.Where(entity => entity is Enemy).ToList().ForEach(enemy => enemy.GetComponent<IDamageable>().TakeDamage(2));
                 }
@@ -40,9 +33,9 @@ namespace Battle
             {
                 bool atLeastOneEnemy = false;
 
-                foreach (GridSquare affectedSquare in FindAffectedSquares(gridSquare))
+                foreach (GridSquare affectedSquare in FindThreatenedSquaresAtTarget(gridSquare))
                 {
-                    if(affectedSquare.Entities.Find(entity => entity is Enemy))
+                    if (affectedSquare.Entities.Find(entity => entity is Enemy))
                     {
                         atLeastOneEnemy = true;
                         break;
@@ -54,7 +47,7 @@ namespace Battle
 
             public override bool CanTargetSquare(GridSquare gridSquare)
             {
-                return GridSquare.Distance(knight.Square, gridSquare) <= 2 && gridSquare != knight.Square;
+                return GridSquare.Distance(knight.Square, gridSquare) <= _range && gridSquare != knight.Square;
             }
 
             public override void BeginPreview()
@@ -62,7 +55,7 @@ namespace Battle
                 //highlight all targetable squares
                 Highlighter.Instance.moveHighlights.Highlight(this.FindTargetableSquares());
             }
-            
+
             public override void UpdatePreview(GridSquare targetSquare)
             {
                 Highlighter.Instance.playerAttackHighlights.Clear();
@@ -70,32 +63,15 @@ namespace Battle
 
                 if (CanTargetSquare(targetSquare))
                 {
-                    if(CanApplyToSquare(targetSquare))
+                    if (CanApplyToSquare(targetSquare))
                     {
-                        Highlighter.Instance.playerAttackHighlights.Highlight(FindAffectedSquares(targetSquare));
+                        Highlighter.Instance.playerAttackHighlights.Highlight(FindThreatenedSquaresAtTarget(targetSquare));
                     }
                     else
                     {
-                        Highlighter.Instance.playerAttackGreyoutHighlights.Highlight(FindAffectedSquares(targetSquare));
+                        Highlighter.Instance.playerAttackGreyoutHighlights.Highlight(FindThreatenedSquaresAtTarget(targetSquare));
                     }
                 }
-            }
-
-            private List<GridSquare> FindAffectedSquares(GridSquare targetSquare)
-            {
-                List<GridSquare> squares = new List<GridSquare>();
-
-                GridDirection forwardDirection = targetSquare.Grid.GetDirectionFromTo(knight.Square, targetSquare, GridDirection.East);
-
-                squares.Add(targetSquare);
-
-                GridSquare adjacentSquare = targetSquare.GetAdjacent(forwardDirection.RotateClockwise());
-                if(adjacentSquare) squares.Add(adjacentSquare);
-
-                adjacentSquare = targetSquare.GetAdjacent(forwardDirection.RotateCounterclockwise());
-                if (adjacentSquare) squares.Add(adjacentSquare);
-
-                return squares;
             }
 
             public override void EndPreview()
@@ -106,9 +82,21 @@ namespace Battle
                 Highlighter.Instance.moveHighlights.Clear();
             }
 
-            public override List<GridSquare> FindThreatenedSquares()
+            public override List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare gridSquare)
             {
-                return new List<GridSquare>();
+                List<GridSquare> squares = new List<GridSquare>();
+
+                GridDirection forwardDirection = gridSquare.Grid.GetDirectionFromTo(knight.Square, gridSquare, GridDirection.East);
+
+                squares.Add(gridSquare);
+
+                GridSquare adjacentSquare = gridSquare.GetAdjacent(forwardDirection.RotateClockwise());
+                if (adjacentSquare) squares.Add(adjacentSquare);
+
+                adjacentSquare = gridSquare.GetAdjacent(forwardDirection.RotateCounterclockwise());
+                if (adjacentSquare) squares.Add(adjacentSquare);
+
+                return squares;
             }
         }
     }

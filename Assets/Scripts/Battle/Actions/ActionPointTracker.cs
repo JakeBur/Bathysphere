@@ -46,8 +46,6 @@ namespace Battle
         /// <returns>True if there are enough points to consume, false otherwise.</returns>
         public bool CanConsumePoints(int amount)
         {
-            //Debug.Log("checking if can consume: " + (CurrentPoints >= amount));
-
             return CurrentPoints >= amount;
         }
     }

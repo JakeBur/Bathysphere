@@ -89,10 +89,15 @@ namespace Battle
             }, 3f);
         }
 
-        public override List<IBattleAction> GetAvailableMenuActions()
+        public override List<PlayerAction> GetAvailableMenuActions()
         {
-            return new List<IBattleAction>();
+            return new List<PlayerAction>();
             //throw new System.NotImplementedException();
+        }
+
+        public override List<PlayerAction> GetAvailableComboActions(Entity entity)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

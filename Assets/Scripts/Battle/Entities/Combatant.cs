@@ -27,7 +27,7 @@ namespace Battle
         /// </summary>
         /// <param name="square">The target GridSquare for the action.</param>
         /// <param name="context">The priority event that called this action.</param>
-        protected void TryExecuteAction(GridSquare square, IBattleAction battleAction, PriorityEvent<GridSquare> context)
+        protected void TryExecuteAction(GridSquare square, BattleAction battleAction, PriorityEvent<GridSquare> context)
         {
             if (battleAction.CanApplyToSquare(square))
             {

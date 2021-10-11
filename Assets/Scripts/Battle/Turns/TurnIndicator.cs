@@ -9,17 +9,17 @@ namespace Battle
         private void Start()
         {
             TurnManager.Instance.OnTurnAdvance += HandleTurnAdvance;
-            HandleTurnAdvance(TurnManager.Instance.CurrentEntry);
+            HandleTurnAdvance(TurnManager.CurrentEntry);
         }
 
         private void Update()
         {
-            HandleTurnAdvance(TurnManager.Instance.CurrentEntry);
+            HandleTurnAdvance(TurnManager.CurrentEntry);
         }
 
         private void HandleTurnAdvance(ITurnOrderEntry turnOrderEntry)
         {
-            MonoBehaviour turnOrderEntryGameObject = TurnManager.Instance.CurrentEntry as MonoBehaviour;
+            MonoBehaviour turnOrderEntryGameObject = TurnManager.CurrentEntry as MonoBehaviour;
             if(turnOrderEntryGameObject != null)
             {
                 transform.position = turnOrderEntryGameObject.transform.position;

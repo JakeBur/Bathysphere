@@ -49,7 +49,7 @@ namespace Battle
         /// Call when this Entity is removed from play for any reason.
         /// (For instance, if a child class of Entity can Die, it should call RemoveFromPlay() as part of the process of dying).
         /// </summary>
-        protected void RemoveFromPlay()
+        public void RemoveFromPlay()
         {
             OnRemovedFromPlay?.Invoke(this);
         }
@@ -62,6 +62,7 @@ namespace Battle
             return true;
         }
 
-        public abstract List<IBattleAction> GetAvailableMenuActions();
+        public abstract List<PlayerAction> GetAvailableMenuActions();
+        public abstract List<PlayerAction> GetAvailableComboActions(Entity entity);
     }
 }
