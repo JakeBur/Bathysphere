@@ -45,7 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 3
-  _moveSpeed: 3
+  actionPoints:
+    _maxPoints: 4
+  _moveSpeed: 1
 --- !u!1001 &2880893838225597567
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,18 +15,15 @@ namespace Battle
         public GameObject pathMarkerPrefab;
         public GameObject targetMarkerPrefab;
 
-        private void Start()
+        private new void Start()
         {
+            base.Start();
+
             targets = GameObject.FindObjectsOfType<PlayerCharacter>().ToList();
         }
 
         public override void Deselect()
         {
-        }
-
-        public override List<IBattleAction> GetPrimedActions()
-        {
-            return new List<IBattleAction>();
         }
 
         public override void Select()
@@ -35,6 +32,7 @@ namespace Battle
 
         public override void StartTurn()
         {
+            base.StartTurn();
             Debug.Log("Starting enemy turn");
 
             List<List<GridSquare>> pathsToTargets = new List<List<GridSquare>>();
@@ -87,8 +85,14 @@ namespace Battle
             {
                 targets[bestIndex].TakeDamage(1);
 
-                OnTurnEnd?.Invoke();
+                OnEndTurn?.Invoke();
             }, 3f);
+        }
+
+        public override List<IBattleAction> GetAvailableMenuActions()
+        {
+            return new List<IBattleAction>();
+            //throw new System.NotImplementedException();
         }
     }
 }

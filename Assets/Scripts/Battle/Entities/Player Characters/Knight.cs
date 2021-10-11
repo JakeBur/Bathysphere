@@ -7,18 +7,23 @@ namespace Battle
 {
     public class Knight : PlayerCharacter
     {
+        public override List<IBattleAction> GetAvailableMenuActions()
+        {
+            throw new System.NotImplementedException();
+        }
+
         protected override void InitializeMenuActions()
         {
             menuActions.Clear();
 
-            menuActions.Add(new Slash(this));
+            menuActions.Add(new Slash(this, 2));
         }
 
         protected class Slash : PlayerAction
         {
             private Knight knight;
 
-            public Slash(Knight knight)
+            public Slash(Knight knight, int cost) : base(knight, cost)
             {
                 this.knight = knight;
             }
@@ -29,8 +34,6 @@ namespace Battle
                 {
                     affectedSquare.Entities.Where(entity => entity is Enemy).ToList().ForEach(enemy => enemy.GetComponent<IDamageable>().TakeDamage(2));
                 }
-
-                knight.EndTurn();
             }
 
             public override bool CanApplyToSquare(GridSquare gridSquare)
@@ -46,7 +49,7 @@ namespace Battle
                     }
                 }
 
-                return CanTargetSquare(gridSquare) && atLeastOneEnemy;
+                return base.CanApplyToSquare(gridSquare) && CanTargetSquare(gridSquare) && atLeastOneEnemy;
             }
 
             public override bool CanTargetSquare(GridSquare gridSquare)

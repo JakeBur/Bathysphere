@@ -13,40 +13,40 @@ namespace Battle
         /// Reference to the currently selected IBattleActor, if any.
         /// This is null when the currently selected object does not implement IBattleActor
         /// </summary>
-        private IBattleActor _currentActor;
+        private Combatant _currentActor;
 
-        void Start()
+        /*void Start()
         {
             // match object tracking to the selection manager
             SelectionManager.Instance.OnSelect += TrySetActor;
 
             // try to execute actions when a square on the grid is clicked
             BattleGridManager.Instance.OnSquareClicked.AddListener(TryExecuteAction, 1);
-        }
+        }*/
 
         /// <summary>
         /// If the given selectable has a component that implements IActor, it will be set as the current actor.
         /// Otherwise the currently selected object has no actor and no actions should be taken.
         /// </summary>
         /// <param name="selectable"></param>
-        private void TrySetActor(ISelectable selectable)
+        /*private void TrySetActor(ISelectable selectable)
         {
-            IBattleActor actor = selectable.TryGetGameObject()?.GetComponent<IBattleActor>();
+            Combatant actor = selectable.TryGetGameObject()?.GetComponent<Combatant>();
 
             _currentActor = actor;
-        }
+        }*/
 
         /// <summary>
         /// Executes the highest priority valid IBattleAction associated with the currently selected IBattleActor, if any.
         /// </summary>
         /// <param name="square">The target GridSquare for the action.</param>
         /// <param name="context">The priority event that called this action.</param>
-        private void TryExecuteAction(GridSquare square, PriorityEvent<GridSquare> context)
+        /*private void TryExecuteAction(GridSquare square, PriorityEvent<GridSquare> context)
         {
             // if the currently selected object isn't a IBattleActor, then we will not execute any actions
             if (_currentActor == null) return;
 
-            List<IBattleAction> actions = _currentActor.GetPrimedActions();
+            List<IBattleAction> actions = _currentActor.GetPlayerActions();
 
             // apply the first action that can be applied
             foreach(IBattleAction action in actions)
@@ -60,7 +60,7 @@ namespace Battle
                     break;
                 }
             }
-        }
+        }*/
     }
 }
 

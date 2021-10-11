@@ -4,14 +4,17 @@ using UnityEngine;
 
 namespace Battle
 {
-    public abstract class PlayerAction : IBattleAction
+    public abstract class PlayerAction : CombatantAction
     {
+        protected PlayerCharacter _player;
+
         public abstract void BeginPreview();
         public abstract void UpdatePreview(GridSquare gridSquare);
         public abstract void EndPreview();
-        public abstract bool CanApplyToSquare(GridSquare gridSquare);
-        public abstract bool CanTargetSquare(GridSquare gridSquare);
-        public abstract void Apply(GridSquare gridSquare);
-        public abstract List<GridSquare> FindThreatenedSquares();
+
+        public PlayerAction(PlayerCharacter player, int cost) : base(player, cost)
+        {
+            _player = player;
+        }
     }
 }

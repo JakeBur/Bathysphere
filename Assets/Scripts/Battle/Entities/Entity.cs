@@ -61,5 +61,7 @@ namespace Battle
         {
             return true;
         }
+
+        public abstract List<IBattleAction> GetAvailableMenuActions();
     }
 }

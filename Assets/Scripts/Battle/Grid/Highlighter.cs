@@ -9,6 +9,7 @@ namespace Battle
         public static Highlighter Instance;
 
         public HighlightSet moveHighlights;
+        public HighlightSet pathHighlights;
         public HighlightSet playerAttackHighlights;
         public HighlightSet playerAttackGreyoutHighlights;
 

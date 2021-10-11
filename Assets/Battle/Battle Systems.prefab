@@ -569,7 +569,6 @@ GameObject:
   - component: {fileID: 1457062354587128604}
   - component: {fileID: 1457062354587128605}
   - component: {fileID: 1457062354587128606}
-  - component: {fileID: 1457062354587128607}
   - component: {fileID: 1457062354587128600}
   m_Layer: 0
   m_Name: Battle Systems
@@ -648,18 +647,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47b195d77fbc1c94e86d0573a2c2cc6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1457062354587128607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1457062354587128602}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 153085b3928a1b7419b2e54a0dea2646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1457062354587128600
@@ -896,6 +883,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveHighlights:
     _highlightPrefab: {fileID: 312086741397359512, guid: 9bc69172b3c1ed74aafb4b7edd1c1f38,
+      type: 3}
+  pathHighlights:
+    _highlightPrefab: {fileID: 312086741397359512, guid: f0fb0a2b270f65b4aa36f092b6a22e73,
       type: 3}
   playerAttackHighlights:
     _highlightPrefab: {fileID: 2009050929713001010, guid: 13ee960f2839a3f4ebbdf63ef732f5eb,

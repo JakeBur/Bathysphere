@@ -12,9 +12,22 @@ namespace Battle
             HandleTurnAdvance(TurnManager.Instance.CurrentEntry);
         }
 
+        private void Update()
+        {
+            HandleTurnAdvance(TurnManager.Instance.CurrentEntry);
+        }
+
         private void HandleTurnAdvance(ITurnOrderEntry turnOrderEntry)
         {
-            transform.position = (turnOrderEntry as MonoBehaviour).transform.position;
+            MonoBehaviour turnOrderEntryGameObject = TurnManager.Instance.CurrentEntry as MonoBehaviour;
+            if(turnOrderEntryGameObject != null)
+            {
+                transform.position = turnOrderEntryGameObject.transform.position;
+            }
+            else
+            {
+                Debug.Log("Turn order entry not a game object");
+            }
         }
     }
 }

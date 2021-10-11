@@ -13,6 +13,8 @@ namespace Battle
         void Select();
         void Deselect();
 
+        public List<IBattleAction> GetAvailableMenuActions();
+
         bool IsSelectable();
     }
 

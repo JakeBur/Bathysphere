@@ -51,19 +51,20 @@ namespace Battle
         {
             menuActions = new List<PlayerAction>();
 
-            _moveAction = new Move(this);
+            _moveAction = new Move(this, 1);
 
             InitializeMenuActions();
         }
 
-        protected void Start()
+        protected new void Start()
         {
+            base.Start();
             BattleInputManager.Instance.OnCancelPressed += Cancel;
         }
 
         protected abstract void InitializeMenuActions();
 
-        public override List<IBattleAction> GetPrimedActions()
+        public override List<IBattleAction> GetAvailableMenuActions()
         {
             List<IBattleAction> actions = new List<IBattleAction>();
             if(this.TurnActive())
@@ -98,16 +99,20 @@ namespace Battle
 
         public override void Select()
         {
+            BattleGridManager.Instance.OnSquareClicked.AddListener(TryExecuteAction, 1);
             PrimedAction = _moveAction;
         }
 
         public override void Deselect()
         {
+            BattleGridManager.Instance.OnSquareClicked.RemoveListener(TryExecuteAction);
             PrimedAction = null;
         }
 
         public override void StartTurn()
         {
+            base.StartTurn();
+
             if (SelectionManager.Instance.selected == this as ISelectable)
             {
                 SelectionManager.Instance.Select(this);
@@ -120,19 +125,50 @@ namespace Battle
             base.EndTurn();
         }
 
+        public override bool ApplyAction(CombatantAction combatantAction, GridSquare targetSquare)
+        {
+            bool success = base.ApplyAction(combatantAction, targetSquare);
+
+            PrimedAction = PrimedAction;
+
+            if(actionPoints.CurrentPoints == 0)
+            {
+                EndTurn();
+            }
+
+            return success;
+        }
+
+        protected void TryExecuteAction(GridSquare square, PriorityEvent<GridSquare> context)
+        {
+            if (PrimedAction == null) return;
+
+            if (PrimedAction.CanApplyToSquare(square))
+            {
+                ApplyAction(PrimedAction, square);
+
+                // if we could do something, consume the event
+                context.ConsumeEvent();
+            }
+        }
+
         private class Move : PlayerAction
         {
-            private PlayerCharacter player;
-
-            public Move(PlayerCharacter player)
+            public Move(PlayerCharacter player, int cost) : base(player, cost)
             {
-                this.player = player;
+
+            }
+
+            public override int CalculateCost(GridSquare targetSquare)
+            {
+                List<GridSquare> path = BattleGridManager.Instance.Grid.CalculatePath(_player.Square, targetSquare);
+
+                return (base.CalculateCost(targetSquare) * path.Count - 1) / _player._moveSpeed;
             }
 
             public override void Apply(GridSquare gridSquare)
             {
-                player.Square = gridSquare;
-                player.EndTurn();
+                _player.Square = gridSquare;
             }
 
             public override void BeginPreview()
@@ -142,7 +178,14 @@ namespace Battle
 
             public override bool CanApplyToSquare(GridSquare gridSquare)
             {
-                return gridSquare.Entities.Count == 0 && GridSquare.Distance(player.Square, gridSquare) <= player._moveSpeed;
+                if (!base.CanApplyToSquare(gridSquare)) return false;
+
+                if (gridSquare.Entities.Count != 0) return false;
+
+                List<GridSquare> path = BattleGridManager.Instance.Grid.CalculatePath(_player.Square, gridSquare);
+                if (_player._moveSpeed * _player.actionPoints.CurrentPoints < path.Count - 1) return false;
+
+                return true;
             }
 
             public override bool CanTargetSquare(GridSquare gridSquare)
@@ -153,6 +196,7 @@ namespace Battle
             public override void EndPreview()
             {
                 Highlighter.Instance.moveHighlights.Clear();
+                Highlighter.Instance.pathHighlights.Clear();
             }
 
             public override List<GridSquare> FindThreatenedSquares()
@@ -162,6 +206,14 @@ namespace Battle
 
             public override void UpdatePreview(GridSquare gridSquare)
             {
+                Highlighter.Instance.pathHighlights.Clear();
+
+                if(CanApplyToSquare(gridSquare))
+                {
+                    List<GridSquare> path = BattleGridManager.Instance.Grid.CalculatePath(_player.Square, gridSquare);
+                    path.RemoveAt(0);
+                    Highlighter.Instance.pathHighlights.Highlight(path);
+                }
 
             }
         }
