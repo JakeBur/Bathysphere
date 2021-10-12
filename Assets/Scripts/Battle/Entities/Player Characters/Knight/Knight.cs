@@ -33,6 +33,7 @@ namespace Battle
             List<PlayerAction> knightSwordActions = new List<PlayerAction>();
             knightSwordActions.Add(new RecoverSword(this, 1));
             knightSwordActions.Add(new Depressurize(this, 1, 5));
+            knightSwordActions.Add(new Vault(this, 1, 3));
 
             comboActions.Add(typeof(KnightSword), knightSwordActions);
 

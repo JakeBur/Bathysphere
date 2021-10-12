@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f936dce3abf2b046b4c08b5e744ccd5, type: 3}
   m_Name: EncounterKnight
   m_EditorClassIdentifier: 
-  _position: {x: 1, y: 1}
+  _position: {x: 3, y: 4}
   _entityData: {fileID: 11400000, guid: 6a14260320721d6488b8a63cb1c7eb22, type: 2}

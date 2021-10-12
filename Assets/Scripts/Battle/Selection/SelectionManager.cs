@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 namespace Battle
 {
@@ -23,6 +24,9 @@ namespace Battle
         /// null if nothing is currently selected.
         /// </summary>
         public ISelectable selected;
+
+        private GridSquare _selectedSquare;
+        private int _selectionIndex = 0;
 
         private void Awake()
         {
@@ -50,17 +54,39 @@ namespace Battle
         /// <param name="context">The calling PriorityEvent</param>
         private void HandleClick(GridSquare square, PriorityEvent<GridSquare> context)
         {
-            if(square.Entities.Count > 0)
+            List<Entity> selectableEntities = square.Entities.Where(entity => entity.IsSelectable()).ToList();
+
+            if(selectableEntities.Count > 0)
             {
-                // Find the first selectable entity in the list and select it
-                foreach(Entity entity in square.Entities)
+                // cycle selection
+                if(square == _selectedSquare)
+                {
+                    _selectionIndex = (_selectionIndex + 1) % selectableEntities.Count;
+                }
+                else
+                {
+                    _selectedSquare = square;
+                    _selectionIndex = 0;
+                }
+
+                int ignoreCounter = _selectionIndex;
+
+                // Find the first selectable entity at the given index and select it
+                foreach(Entity entity in selectableEntities)
                 {
                     if(entity.IsSelectable())
                     {
-                        Select(entity);
+                        if(ignoreCounter == 0)
+                        {
+                            Select(entity);
 
-                        // only select one entity
-                        break;
+                            // only select one entity
+                            break;
+                        }
+                        else
+                        {
+                            ignoreCounter--;
+                        }
                     }
                 }
             }

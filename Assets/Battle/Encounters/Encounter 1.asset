@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f725ffe5b16427d4f80f604709b12e00, type: 3}
   m_Name: Encounter 1
   m_EditorClassIdentifier: 
-  gridSize: {x: 6, y: 3}
+  gridSize: {x: 10, y: 9}
   _entities:
   - {fileID: 11400000, guid: 59d9bcb97cc46eb4b90f2497815dfbd2, type: 2}
   - {fileID: 11400000, guid: d43d354e45e57984db4cb0d92f7168e3, type: 2}
+  - {fileID: 11400000, guid: 5b0724dc606a5fa43b5af59bee9bfea8, type: 2}

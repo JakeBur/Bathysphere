@@ -29,7 +29,6 @@ namespace Battle
         public override List<PlayerAction> GetAvailableMenuActions()
         {
             List<PlayerAction> actions = new List<PlayerAction>();
-            actions.Add(new TestAction(_knight, 1));
 
             return actions;
         }

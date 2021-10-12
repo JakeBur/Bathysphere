@@ -28,6 +28,7 @@ namespace Battle
                 if (enemy)
                 {
                     new StatusEffect.Staggered(enemy, 1);
+                    enemy.TakeDamage(1);
                 }
             }
 

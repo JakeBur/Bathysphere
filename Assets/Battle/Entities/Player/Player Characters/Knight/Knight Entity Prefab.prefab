@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 3
   actionPoints:
-    _maxPoints: 4
+    _maxPoints: 8
   _moveSpeed: 1
   knightSwordPrefab: {fileID: 145688876222621897, guid: a0a76de4dabe30d4cb7c16cd2da556b4,
     type: 3}
