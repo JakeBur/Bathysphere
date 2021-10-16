@@ -6,6 +6,9 @@ namespace Battle
 {
     public partial class Knight
     {
+        /// <summary>
+        /// Intercepts an enemy attack, blocks it, and does damage to the attacker.
+        /// </summary>
         public class ProtectInterceptor : ActionInterceptor
         {
             protected Knight _knight;
@@ -16,7 +19,7 @@ namespace Battle
 
                 _knight.AddStartTurnListener(HandleKnightStartTurn);
 
-                Consumes = true;
+                BlocksAction = true;
             }
 
             public override bool CanIntercept(BattleAction battleAction, Combatant actingCombatant, GridSquare targetSquare)

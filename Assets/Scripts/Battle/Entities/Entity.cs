@@ -100,7 +100,7 @@ namespace Battle
                     {
                         _actionInterceptors[i].InterceptAction(battleAction, actingCombatant, Square);
 
-                        if (_actionInterceptors[i].Consumes)
+                        if (_actionInterceptors[i].BlocksAction)
                         {
                             return true;
                         }
