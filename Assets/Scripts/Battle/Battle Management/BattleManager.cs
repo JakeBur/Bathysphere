@@ -5,12 +5,24 @@ using System.Linq;
 
 namespace Battle
 {
+    /// <summary>
+    /// Creates and manages the overall state of the battle, including the management of Entities and victory/defeat conditions.
+    /// </summary>
     public class BattleManager : MonoBehaviour
     {
+        /// <summary>
+        /// Static reference to self.
+        /// </summary>
         public static BattleManager Instance;
 
+        /// <summary>
+        /// Reference to the encounter that this battle started using.
+        /// </summary>
         private Encounter _encounter;
 
+        /// <summary>
+        /// List of all entities in this battle.
+        /// </summary>
         public List<Entity> entities;
 
         private void Awake()
@@ -18,20 +30,10 @@ namespace Battle
             Instance = this;
         }
 
-        private void Start()
-        {
-            /*
-            BattleGridManager.Instance.AddEntity(entities[0], 0, 0);
-            BattleGridManager.Instance.AddEntity(entities[1], 4, 4);
-            BattleGridManager.Instance.AddEntity(entities[2], 1, 4);
-
-            TurnManager.Instance.AddTurnOrderEntry(entities[0] as ITurnOrderEntry);
-            TurnManager.Instance.AddTurnOrderEntry(entities[1] as ITurnOrderEntry);
-            TurnManager.Instance.AddTurnOrderEntry(entities[2] as ITurnOrderEntry);
-            TurnManager.Instance.StartTurnOrder();*/
-            
-        }
-
+        /// <summary>
+        /// Starts the battle using the given Encounter as a guide for grid layout and entities.
+        /// </summary>
+        /// <param name="encounter">The encounter to use in the generation of this battle.</param>
         public void StartEncounter(Encounter encounter)
         {
             if(encounter == null)
@@ -52,13 +54,32 @@ namespace Battle
             TurnOrder.StartTurnOrder();
         }
 
+        /// <summary>
+        /// Instantiates a new Entity at the given position using the given prefab.
+        /// </summary>
+        /// <param name="prefab">The prefab to instantiate.</param>
+        /// <param name="position">The position to create the Entity at.</param>
+        /// <returns>The created entity, or null if the instantiation process failed.</returns>
         public static Entity InstantiateEntity(GameObject prefab, Vector2Int position)
         {
             return InstantiateEntity(prefab, position.x, position.y);
         }
 
+        /// <summary>
+        /// Instantiates a new Entity at the given position using the given prefab.
+        /// </summary>
+        /// <param name="prefab">The prefab to instantiate.</param>
+        /// <param name="x">The X position to create the Entity at.</param>
+        /// <param name="y">The Y position to create the Entity at.</param>
+        /// <returns>The created entity, or null if the instantiation process failed.</returns>
         public static Entity InstantiateEntity(GameObject prefab, int x, int y)
         {
+            if(!BattleGridManager.Instance.Grid.HasPosition(x, y))
+            {
+                Debug.LogError("InstantiateEntity Error: provided position is not on the grid. Aborting instantiation");
+                return null;
+            }
+
             GameObject createdEntityObject = Instantiate(prefab);
 
             Entity entity = createdEntityObject.GetComponent<Entity>();
@@ -66,7 +87,7 @@ namespace Battle
             if(entity == null)
             {
                 Destroy(createdEntityObject);
-                Debug.Log("InstantiateEntity Error: provided prefab is not an Entity. Aborting instantiation");
+                Debug.LogError("InstantiateEntity Error: provided prefab is not an Entity. Aborting instantiation");
                 return null;
             }
 
@@ -81,6 +102,11 @@ namespace Battle
             return entity;
         }
 
+        /// <summary>
+        /// Instantiates an Entity using the information contained in the given EncounterEntity.
+        /// </summary>
+        /// <param name="encounterEntity">The EncounterEntity that will provide the prefab and position for the new Entity.</param>
+        /// <returns>The created entity, or null if the instantiation process failed.</returns>
         public static Entity InstantiateEntity(EncounterEntity encounterEntity)
         {
             return InstantiateEntity(encounterEntity.EntityData.prefab, encounterEntity.Position);

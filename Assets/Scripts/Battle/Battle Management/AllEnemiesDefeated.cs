@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Battle
 {
+    /// <summary>
+    /// Battle end condition that requires all enemies to be defeated.
+    /// </summary>
     public class AllEnemiesDefeated : EndCondition
     {
         public override bool Met(BattleManager battleManager)

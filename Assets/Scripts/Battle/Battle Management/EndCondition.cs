@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Battle
 {
+    /// <summary>
+    /// Parent class for victory/defeat conditions for battles.
+    /// </summary>
     public abstract class EndCondition
     {
         /// <summary>
