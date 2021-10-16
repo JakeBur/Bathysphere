@@ -5,15 +5,32 @@ using System;
 
 namespace Battle
 {
+    /// <summary>
+    /// An action point tracker manages available action points and enforces action point usage patterns.
+    /// </summary>
     [Serializable]
     public class ActionPointTracker
     {
+        /// <summary>
+        /// The amount of points this tracker returns to when refreshed.
+        /// </summary>
         [SerializeField]
         private int _maxPoints;
 
+        /// <summary>
+        /// The current action point count.
+        /// </summary>
         public int CurrentPoints { get; private set; }
+
+        /// <summary>
+        /// Accessor property for the maximum point value.
+        /// </summary>
         public int MaxPoints { get => _maxPoints; }
 
+        /// <summary>
+        /// Resets action point count on this tracker to full.
+        /// TODO: this is where we can manage buffs and debuffs for action points.
+        /// </summary>
         public void Reset()
         {
             CurrentPoints = MaxPoints;

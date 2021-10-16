@@ -28,11 +28,6 @@ namespace Battle
                 return base.CanApplyToSquare(targetSquare) && targetSquare.Entities.Find(entity => entity is PlayerCharacter) && GridSquare.Distance(_enemy.Square, targetSquare) == 1;
             }
 
-            public override bool CanTargetSquare(GridSquare targetSquare)
-            {
-                return true;
-            }
-
             public override List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare targetSquare)
             {
                 return new List<GridSquare>();

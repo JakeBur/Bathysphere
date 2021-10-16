@@ -46,11 +46,6 @@ namespace Battle
                 return targetSquare == null && _enemy._statusEffects.Find(effect => effect is StatusEffect.Pinned) == null;
             }
 
-            public override bool CanTargetSquare(GridSquare targetSquare)
-            {
-                return true;
-            }
-
             public override List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare targetSquare)
             {
                 return new List<GridSquare>();

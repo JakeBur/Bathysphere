@@ -15,9 +15,27 @@ namespace Battle
         public CombatantAction(Combatant combatant, int cost)
         {
             _combatant = combatant;
-            ActingCombatant = combatant;
 
             _cost = cost;
+        }
+
+        public override void TryApply(GridSquare targetSquare)
+        {
+            if(targetSquare != null)
+            {
+                List<Entity> entities = targetSquare.Entities;
+
+                foreach (Entity entity in entities)
+                {
+                    // if the action was intercepted
+                    if (entity.TryInterceptAction(this, _combatant))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            Apply(targetSquare);
         }
 
         public override bool CanApplyToSquare(GridSquare targetSquare)
