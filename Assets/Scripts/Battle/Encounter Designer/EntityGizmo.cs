@@ -10,7 +10,6 @@ public class EntityGizmo : MonoBehaviour
 {
     private void OnEnable()
     {
-        //SceneView.onSceneGUIDelegate += (SceneView.OnSceneFunc)Delegate.Combine(SceneView.onSceneGUIDelegate, new SceneView.OnSceneFunc(CustomOnSceneGUI));
         SceneView.beforeSceneGui -= DrawHitbox;
         SceneView.beforeSceneGui += DrawHitbox;
     }
@@ -25,18 +24,10 @@ public class EntityGizmo : MonoBehaviour
         SceneView.beforeSceneGui -= DrawHitbox;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    /// <summary>
+    /// Creates the invisible interaction hitbox that allows the user to drag and drop EncounterEntities in the Encounter Editor.
+    /// </summary>
+    /// <param name="sceneView">The sceneView to draw the hitbox on.</param>
     public void DrawHitbox(SceneView sceneView)
     {
         if (Event.current.type == EventType.DragUpdated || Event.current.type == EventType.Repaint)
@@ -72,8 +63,6 @@ public class EntityGizmo : MonoBehaviour
 
                         if (encounterEntity)
                         {
-                            //DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
-                            //DragAndDrop.PrepareStartDrag();
                             DragAndDrop.SetGenericData("EncounterEntity", encounterEntity);
                             DragAndDrop.StartDrag("Encounter Entity");
                             Event.current.Use();
@@ -94,5 +83,4 @@ public class EntityGizmo : MonoBehaviour
         Gizmos.color = new Color(0, 1, 0, 0.2f);
         Gizmos.DrawWireMesh(mesh, transform.position, Quaternion.Euler(-90, 0, 0), Vector3.one * 0.5f);
     }
-
 }

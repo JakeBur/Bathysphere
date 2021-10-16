@@ -9,24 +9,27 @@ using UnityEditor.SceneManagement;
 
 namespace Battle
 {
-    //[ExecuteInEditMode]
+    /// <summary>
+    /// Manages the state of a scene to allow the user to modify an Encounter.
+    /// </summary>
     [ExecuteAlways]
     public class EncounterDesigner : MonoBehaviour
     {
-        public static SerializedProperty dragDropItem;
-
         public Encounter encounter;
 
         public GameObject battleSystems;
 
         public Dictionary<EncounterEntity, GameObject> worldObjects;
 
-        // instantiated preview object for an uncommitted addition of an entityData
+        /// <summary>
+        /// Instantiated preview object for an uncommitted addition of an entityData.
+        /// </summary>
         private GameObject entityDataPreview;
 
+        /// <summary>
+        /// Reference to the prefab that should be instantiated on play so that the Encounter can be tested.
+        /// </summary>
         public GameObject battleSystemsPrefab;
-
-        public bool initialize;
 
         private void Awake()
         {
@@ -41,21 +44,11 @@ namespace Battle
             {
                 Initialize();
             }
-            
         }
 
         private void Start()
         {
             Initialize();
-        }
-
-        private void Update()
-        {
-            if(!initialize)
-            {
-                initialize = true;
-                Initialize();
-            }
         }
 
         private void OnDestroy()
@@ -64,26 +57,9 @@ namespace Battle
             if(encounter != null) encounter.OnContentsUpdated -= InitializeEntities;
         }
 
-        public static void PickUpEntity(SerializedProperty entity)
-        {
-            Debug.Log("picking up: " + entity);
-            dragDropItem = entity;
-        }
-
-        public static void PutDownEntity()
-        {
-            if (dragDropItem != null)
-            {
-                Debug.Log("putting down: " + dragDropItem);
-                dragDropItem = null;
-            }
-        }
-
-        public Vector2Int GetGridSize()
-        {
-            return battleSystems.GetComponent<BattleGridManager>().Grid.Size;
-        }
-
+        /// <summary>
+        /// Initializes the scene when in edit mode to reflect the state of the current Encounter.
+        /// </summary>
         public void Initialize()
         {
             BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
@@ -106,12 +82,61 @@ namespace Battle
             encounter.OnContentsUpdated += InitializeEntities;
         }
 
+        /// <summary>
+        /// Gets the current EncounterDesigner.
+        /// Optionally, if it doesn't exist, gives the user a prompt which will open the EncounterDesigner scene.
+        /// </summary>
+        /// <param name="promptIfOutsideScene">Whether to prompt the user to switch scenes or not.</param>
+        /// <returns>The current EncounterDesigner, or null if one does not exist and the user decided not to open the correct scene.</returns>
+        public static EncounterDesigner FindEncounterDesigner(bool promptIfOutsideScene = false)
+        {
+            EncounterDesigner encounterDesigner = FindObjectOfType<EncounterDesigner>();
+
+            if (!encounterDesigner && promptIfOutsideScene)
+            {
+                bool openScene = EditorUtility.DisplayDialog("Open Encounter Designer?",
+                    "Would you like to open the Encounter Designer Scene to make changes to this Encounter?",
+                    "Open Scene", "Cancel");
+
+                if (openScene)
+                {
+
+                    EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+                    EditorSceneManager.OpenScene("Assets/Encounter Designer/EncounterDesigner.unity");
+
+                    encounterDesigner = FindObjectOfType<EncounterDesigner>();
+                }
+            }
+
+            return encounterDesigner;
+        }
+
+        /// <summary>
+        /// Sets the current encounter.
+        /// Calls Initialization functionality to update the scene to the new Encounter.
+        /// </summary>
+        /// <param name="encounter">The Encounter to swap to.</param>
+        public void SetEncounter(Encounter encounter)
+        {
+            if (this.encounter != null) this.encounter.OnContentsUpdated -= InitializeEntities;
+
+            this.encounter = encounter;
+            Initialize();
+        }
+
+        /// <summary>
+        /// Clears the scene of Entities to have a clean slate.
+        /// If the application is in play mode, it deletes the edit mode instance of the BattleManager as well.
+        /// </summary>
         private void CleanScene()
         {
             FindObjectsOfType<Entity>().ToList().ForEach(entity => DestroyImmediate(entity.gameObject));
             if(Application.isPlaying) DestroyImmediate(FindObjectOfType<BattleManager>().gameObject);
         }
 
+        /// <summary>
+        /// Initializes all entities desribed by the current Encounter's Encounter Entities.
+        /// </summary>
         private void InitializeEntities()
         {
             BattleGridManager battleGridManager = GetComponentInChildren<BattleGridManager>();
@@ -138,6 +163,10 @@ namespace Battle
             });
         }
 
+        /// <summary>
+        /// Handler for the SceneView update loop. Used to hook into drag and drop events.
+        /// </summary>
+        /// <param name="view">The SceneView being updated.</param>
         private void HandleSceneGUI(SceneView view)
         {
             EncounterEntity encounterEntity = DragAndDrop.GetGenericData("EncounterEntity") as EncounterEntity;
@@ -165,11 +194,14 @@ namespace Battle
             }
         }
 
+        /// <summary>
+        /// Handles drag and drop functionality for EncounterEntities.
+        /// </summary>
+        /// <param name="entity">The EncounterEntity being dragged.</param>
         private void HandleDragDrop(EncounterEntity entity)
         {
             if (encounter.Entities.Contains(entity))
             {
-
                 Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
                 Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity);
                 GridSquare targetSquare = null;
@@ -221,6 +253,10 @@ namespace Battle
             }
         }
 
+        /// <summary>
+        /// Handles drag and drop functionality for EntityData.
+        /// </summary>
+        /// <param name="entity">The EntityData being dragged.</param>
         private void HandleDragDrop(EntityData entity)
         {
             Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
@@ -265,56 +301,11 @@ namespace Battle
                     position = targetSquare.Position;
                 }
 
-                EncounterEntity encounterEntity = encounter.AddEntity(entity, position);
                 DestroyImmediate(entityDataPreview);
 
                 Event.current.Use();
                 DragAndDrop.AcceptDrag();
             }
-
-            /*if(Event.current.type == EventType.DragExited)
-            {
-                DestroyImmediate(entityDataPreview);
-            }*/
         }
-
-        public static EncounterDesigner FindEncounterDesigner(bool promptIfOutsideScene = false)
-        {
-            EncounterDesigner encounterDesigner = FindObjectOfType<EncounterDesigner>();
-
-
-            if (!encounterDesigner && promptIfOutsideScene)
-            {
-                bool openScene = EditorUtility.DisplayDialog("Open Encounter Designer?",
-                    "Would you like to open the Encounter Designer Scene to make changes to this Encounter?",
-                    "Open Scene", "Cancel");
-
-                if (openScene)
-                {
-
-                    EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-                    EditorSceneManager.OpenScene("Assets/Encounter Designer/EncounterDesigner.unity");
-                    
-                    encounterDesigner = FindObjectOfType<EncounterDesigner>();
-                }
-            }
-
-            return encounterDesigner;
-        }
-
-        public void SetEncounter(Encounter encounter)
-        {
-            if(this.encounter != null) this.encounter.OnContentsUpdated -= InitializeEntities;
-
-            this.encounter = encounter;
-            Initialize();
-        }
-
-        private void HandleClick(InputAction.CallbackContext context)
-        {
-            PutDownEntity();
-        }
-
-        
     }
 }

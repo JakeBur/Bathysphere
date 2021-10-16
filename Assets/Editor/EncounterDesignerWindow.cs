@@ -7,14 +7,34 @@ using System.Linq;
 using UnityEditor.UIElements;
 using Battle;
 
+/// <summary>
+/// Editor window that modifies an Encounter.
+/// </summary>
 public class EncounterDesignerWindow : EditorWindow
 {
+    /// <summary>
+    /// The currently selected Encounter asset.
+    /// </summary>
     private static Encounter selectedEncounter;
+
+    /// <summary>
+    /// Reference to the ListView UI showing all EntityData assets in the project.
+    /// </summary>
     private static ListView entityList;
+
+    /// <summary>
+    /// Reference to the ListView UI showing all Encounter assets in the project.
+    /// </summary>
     private static ListView encounterList;
 
+    /// <summary>
+    /// The list of all Encounter assets in the project.
+    /// </summary>
     private static Encounter[] encounters;
 
+    /// <summary>
+    /// Instantiates the window.
+    /// </summary>
     [MenuItem("Tools/Encounter Designer")]
     public static void ShowWindow()
     {
@@ -35,6 +55,10 @@ public class EncounterDesignerWindow : EditorWindow
         BuildEntityDataListView();
     }
 
+    /// <summary>
+    /// Finds all Encounter assets in the project and stores them in the given array.
+    /// </summary>
+    /// <param name="encounters">The array to fill with all Encounter assets in the project.</param>
     public static void FindAllEncounters(out Encounter[] encounters)
     {
         string[] guids = AssetDatabase.FindAssets("t:Encounter");
@@ -47,6 +71,10 @@ public class EncounterDesignerWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// Finds all EntityData assets in the project and stores them in the given array.
+    /// </summary>
+    /// <param name="entityData">The array to fill with all EntityData assets in the project.</param>
     public static void FindAllEntityData(out EntityData[] entityData)
     {
         string[] guids = AssetDatabase.FindAssets("t:EntityData");
@@ -59,6 +87,9 @@ public class EncounterDesignerWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// Updates the contents of the EncounterList to reflect the current state of the project.
+    /// </summary>
     public static void RefreshEncounterList()
     {
         FindAllEncounters(out encounters);
@@ -66,12 +97,14 @@ public class EncounterDesignerWindow : EditorWindow
         encounterList.Refresh();
     }
 
+    /// <summary>
+    /// Builds the UI that allows the user to select Encounters.
+    /// </summary>
     private void BuildEncounterListView()
     {
         FindAllEncounters(out encounters);
 
         Button addEncounterButton = rootVisualElement.Query<Button>("add-encounter-button").First();
-        //here's where we can launch an add encounter window
         addEncounterButton.clicked += () => EncounterCreatorWizard.ShowWindow();
 
         encounterList = rootVisualElement.Query<ListView>("encounter-list").First();
@@ -92,6 +125,7 @@ public class EncounterDesignerWindow : EditorWindow
 
             return container;
         };
+
         encounterList.bindItem = (element, i) => 
         {
             Label label = element.Query<Label>("encounter-label");
@@ -166,6 +200,9 @@ public class EncounterDesignerWindow : EditorWindow
         encounterList.Refresh();
     }
 
+    /// <summary>
+    /// Builds the UI that allows the user to select EntityData and add it to the Encounter.
+    /// </summary>
     private void BuildEntityDataListView()
     {
         FindAllEntityData(out EntityData[] entityData);
@@ -185,6 +222,10 @@ public class EncounterDesignerWindow : EditorWindow
         entityDataList.Refresh();
     }
 
+    /// <summary>
+    /// Builds the UI that allows the user to modify Encounters.
+    /// </summary>
+    /// <param name="encounter"></param>
     private void BuildEncounterInfoBox(Encounter encounter)
     {
         EncounterDesigner encounterDesigner = EncounterDesigner.FindEncounterDesigner();//
@@ -247,7 +288,6 @@ public class EncounterDesignerWindow : EditorWindow
     private void HandleEncounterButtonClick()
     {
         EncounterDesigner.FindEncounterDesigner(true).SetEncounter(selectedEncounter);
-        //GameObject.Find("Encounter Designer").GetComponent<EncounterDesigner>();
     }
 
     private void HandleDragUpdate(DragUpdatedEvent dragUpdatedEvent)
@@ -303,6 +343,10 @@ public class EncounterDesignerWindow : EditorWindow
         }
     }
 
+    /// <summary>
+    /// Builds a listing for a given EncounterEntity in the Encounter info box.
+    /// </summary>
+    /// <returns>A reference to the created VisualElement.</returns>
     private VisualElement BuildEntityListing()
     {
         VisualElement entityBox = new VisualElement();
@@ -331,6 +375,11 @@ public class EncounterDesignerWindow : EditorWindow
         return entityBox;
     }
 
+    /// <summary>
+    /// Binds the given EntityListing to a specific EncounterEntity and its properties.
+    /// </summary>
+    /// <param name="element">The entity listing to bind.</param>
+    /// <param name="entity">The entity to bind the entity listing to.</param>
     private void BindEntityListing(VisualElement element, EncounterEntity entity)
     {
         element.Query<Label>("entity-label").First().text = entity.EntityData.name;
@@ -360,6 +409,4 @@ public class EncounterDesignerWindow : EditorWindow
         DragAndDrop.SetGenericData("EntityData", entityData);
         DragAndDrop.StartDrag("EntityData");
     }
-
-    
 }

@@ -5,8 +5,14 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Battle;
 
+/// <summary>
+/// Window for the creation of a new Encounter.
+/// </summary>
 public class EncounterCreatorWizard : EditorWindow
 {
+    /// <summary>
+    /// Instantiates the window.
+    /// </summary>
     public static void ShowWindow()
     {
         EncounterCreatorWizard window = GetWindow<EncounterCreatorWizard>();
@@ -24,6 +30,9 @@ public class EncounterCreatorWizard : EditorWindow
         BuildForm();
     }
 
+    /// <summary>
+    /// Builds the form that the user will fill out to create a new Encounter.
+    /// </summary>
     private void BuildForm()
     {
         TextField nameField = rootVisualElement.Query<TextField>("name-field").First();

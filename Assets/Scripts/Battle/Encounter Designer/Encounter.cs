@@ -6,12 +6,25 @@ using UnityEditor;
 
 namespace Battle
 {
+    /// <summary>
+    /// An Encounter holds all necesarry data to set up the initial state of a battle.
+    /// </summary>
     [CreateAssetMenu(fileName = "Encounter", menuName = "Battle/Encounter", order = 0)]
     public class Encounter : ScriptableObject
     {
+        /// <summary>
+        /// Called whenever any data in this Encounter is modified.
+        /// </summary>
         public Action OnContentsUpdated;
 
+        /// <summary>
+        /// Size of this grid in squares. Format is (x, y).
+        /// </summary>
         public Vector2Int gridSize;
+
+        /// <summary>
+        /// List of EncounterEntities that exist in this Encounter.
+        /// </summary>
         public List<EncounterEntity> Entities
         {
             get
@@ -21,9 +34,18 @@ namespace Battle
             }
         }
 
+        /// <summary>
+        /// List of EncounterEntities that exist in this Encounter.
+        /// </summary>
         [SerializeField]
         private List<EncounterEntity> _entities;
 
+        /// <summary>
+        /// Adds a new EncounterEntity to this Encounter based on the given EntityData.
+        /// </summary>
+        /// <param name="entityData">The EntityData that describes the Entity to be created.</param>
+        /// <param name="position">The position to create the EncounterEntity at.</param>
+        /// <returns>The created EncounterEntity.</returns>
         public EncounterEntity AddEntity(EntityData entityData, Vector2Int? position = null)
         {
             string encounterPath = MovePathUpOneLevel(AssetDatabase.GetAssetPath(this));
@@ -59,12 +81,11 @@ namespace Battle
             return createdEncounterEntity;
         }
 
+        /// <summary>
+        /// Deletes this Encounter and all EncounterEntities associated with it.
+        /// </summary>
         public void Delete()
         {
-            /*foreach(EncounterEntity entity in entities)
-            {
-                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(entity));
-            }*/
             string folderPath = GenerateEntityFolderPath();
 
             FileUtil.DeleteFileOrDirectory(folderPath);
@@ -73,12 +94,7 @@ namespace Battle
             AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(this));
         }
 
-        public void AddEntity(EncounterEntity encounterEntity)
-        {
-            Entities.Add(encounterEntity);
-            EditorUtility.SetDirty(this);
-            OnContentsUpdated?.Invoke();
-        }
+        
 
         public void RemoveEntity(EncounterEntity entity)
         {
@@ -92,6 +108,22 @@ namespace Battle
             OnContentsUpdated?.Invoke();
         }
 
+        /// <summary>
+        /// Adds an EncounterEntity to this Encounter.
+        /// </summary>
+        /// <param name="encounterEntity">The EncounterEntity to be added.</param>
+        private void AddEntity(EncounterEntity encounterEntity)
+        {
+            Entities.Add(encounterEntity);
+            EditorUtility.SetDirty(this);
+            OnContentsUpdated?.Invoke();
+        }
+
+        /// <summary>
+        /// Helper function to remove the final element of a filepath.
+        /// </summary>
+        /// <param name="path">The path to truncate.</param>
+        /// <returns>The truncated path.</returns>
         private static string MovePathUpOneLevel(string path)
         {
             string[] elements = path.Split('/');
@@ -106,6 +138,10 @@ namespace Battle
             return finalPath;
         }
 
+        /// <summary>
+        /// Generates a folderpath where the EncounterEntities associated with this Encounter should reside.
+        /// </summary>
+        /// <returns>The generated filepath.</returns>
         private string GenerateEntityFolderPath()
         {
             string encounterPath = AssetDatabase.GetAssetPath(this);
@@ -124,11 +160,15 @@ namespace Battle
             return folderPath;
         }
 
-        public void Rename(string value)
+        /// <summary>
+        /// Renames this Encounter in the filesystem, along with its associated folder.
+        /// </summary>
+        /// <param name="name">The new name.</param>
+        public void Rename(string name)
         {
             string oldFolderPath = GenerateEntityFolderPath();
 
-            AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(this), value);
+            AssetDatabase.RenameAsset(AssetDatabase.GetAssetPath(this), name);
             
             AssetDatabase.MoveAsset(oldFolderPath, GenerateEntityFolderPath());
         }
