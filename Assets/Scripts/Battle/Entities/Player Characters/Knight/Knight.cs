@@ -15,10 +15,12 @@ namespace Battle
         {
             menuActions.Clear();
 
+            // if the sword is not out on the field
             if(_knightSword == null)
             {
                 menuActions.Add(new ThrowSword(this, 2, 2, knightSwordPrefab));
                 menuActions.Add(new Slash(this, 2, 2));
+                menuActions.Add(new Protect(this, 1, 3));
             }
             else
             {

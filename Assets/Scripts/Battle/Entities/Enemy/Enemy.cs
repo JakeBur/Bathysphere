@@ -8,7 +8,7 @@ namespace Battle
     /// <summary>
     /// An Enemy is an AI controled Combatant hostile to the player.
     /// </summary>
-    public class Enemy : Combatant
+    public partial class Enemy : Combatant
     {
         public List<PlayerCharacter> targets;
 
@@ -32,13 +32,6 @@ namespace Battle
 
         protected override void StartTurnBehavior()
         {
-            if(actionPoints.CurrentPoints < 2)
-            {
-                OnEndTurn?.Invoke();
-                return;
-            }
-
-            
             List<List<GridSquare>> pathsToTargets = new List<List<GridSquare>>();
 
             foreach(PlayerCharacter target in targets)
@@ -61,48 +54,38 @@ namespace Battle
                 }
             }
 
-            if (_statusEffects.Find(effect => effect is StatusEffect.Pinned) != null && pathsToTargets[bestIndex].Count - 1 > 1)
+            Attack attack = new Attack(this, 2);
+
+            if (attack.CanApplyToSquare(targets[bestIndex].Square))
             {
-                OnEndTurn?.Invoke();
-                return;
+                attack.TryApply(targets[bestIndex].Square);
+            }
+            else
+            {
+                EndTurn();
             }
 
-            GameObject targetMarker = Instantiate(targetMarkerPrefab);
-            targetMarker.transform.position = targets[bestIndex].transform.position;
-
-            List<GameObject> pathMarkers = new List<GameObject>();
-
-            Scheduler.Schedule(() =>
+            MoveToNearestPlayer move = new MoveToNearestPlayer(this, 1, targets[bestIndex]);
+            if(move.CanApplyToSquare(null))
             {
-                foreach(GridSquare gridSquare in pathsToTargets[bestIndex])
-                {
-                    GameObject pathMarker = Instantiate(pathMarkerPrefab);
-                    pathMarker.transform.position = gridSquare.transform.position;
-                    pathMarkers.Add(pathMarker);
-                }
+                move.TryApply(null);
+            }
 
-            }, 1f);
+            attack = new Attack(this, 2);
 
-            Scheduler.Schedule(() =>
+            if(attack.CanApplyToSquare(targets[bestIndex].Square))
             {
-                Destroy(targetMarker);
-                pathMarkers.ForEach(marker => Destroy(marker));
-                Square = pathsToTargets[bestIndex][pathsToTargets[bestIndex].Count - 2];
-
-            }, 2f);
-
-            Scheduler.Schedule(() =>
+                attack.TryApply(targets[bestIndex].Square);
+            }
+            else
             {
-                targets[bestIndex].TakeDamage(1);
-
-                OnEndTurn?.Invoke();
-            }, 3f);
+                EndTurn();
+            }
         }
 
         public override List<PlayerAction> GetAvailableMenuActions()
         {
             return new List<PlayerAction>();
-            //throw new System.NotImplementedException();
         }
 
         public override List<PlayerAction> GetAvailableComboActions(Entity entity)

@@ -15,15 +15,12 @@ namespace Battle
         public CombatantAction(Combatant combatant, int cost)
         {
             _combatant = combatant;
+            ActingCombatant = combatant;
+
             _cost = cost;
         }
 
-        /*public virtual void Apply(GridSquare gridSquare)
-        {
-            _combatant.actionPoints.TryConsumePoints(CalculateCost(gridSquare));
-        }*/
-
-        public override bool CanApplyToSquare(GridSquare gridSquare)
+        public override bool CanApplyToSquare(GridSquare targetSquare)
         {
             return _combatant.actionPoints.CanConsumePoints(_cost);
         }

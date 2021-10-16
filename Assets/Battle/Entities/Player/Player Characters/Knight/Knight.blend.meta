@@ -2,8 +2,36 @@ fileFormatVersion: 2
 guid: b2b9538cc0731fc4eb37916f52799517
 ModelImporter:
   serializedVersion: 20200
-  internalIDToNameTable: []
-  externalObjects: {}
+  internalIDToNameTable:
+  - first:
+      74: -623603649343465320
+    second: Scene
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Armor
+    second: {fileID: 2100000, guid: 7293a9c89ee93a04bbd9eded232327ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Arms and Legs
+    second: {fileID: 2100000, guid: a0c6d91eafee32d42af354cf003bdb53, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Hair
+    second: {fileID: 2100000, guid: f07e51c6e95f7aa41a2e1cfd00587382, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Lights
+    second: {fileID: 2100000, guid: 37af1502882e0134799fa2fd3a15957a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Scarf and Tunic
+    second: {fileID: 2100000, guid: 1dc4eb58f9e97cf4f8a39e2cb9e329f7, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

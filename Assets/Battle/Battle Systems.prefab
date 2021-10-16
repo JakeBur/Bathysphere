@@ -893,6 +893,9 @@ MonoBehaviour:
   playerAttackGreyoutHighlights:
     _highlightPrefab: {fileID: 2009050929713001010, guid: a01419c9fbfe1684492bc1eef691b002,
       type: 3}
+  playerBuffHighlights:
+    _highlightPrefab: {fileID: 2009050929713001010, guid: 905f743b9049c1f4a8c33c4222998309,
+      type: 3}
 --- !u!1001 &1457062353856164705
 PrefabInstance:
   m_ObjectHideFlags: 0

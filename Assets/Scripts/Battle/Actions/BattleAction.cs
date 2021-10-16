@@ -10,11 +10,38 @@ namespace Battle
     /// </summary>
     public abstract class BattleAction
     {
-        public abstract bool CanApplyToSquare(GridSquare gridSquare);
-        public abstract bool CanTargetSquare(GridSquare gridSquare);
-        public abstract void Apply(GridSquare gridSquare);
+        public Combatant ActingCombatant { get; protected set; }
 
-        public abstract List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare gridSquare);
+        public abstract bool CanApplyToSquare(GridSquare targetSquare);
+        public abstract bool CanTargetSquare(GridSquare targetSquare);
+        public abstract void Apply(GridSquare targetSquare);
+
+        public abstract List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare targetSquare);
+
+        public void TryApply(GridSquare targetSquare)
+        {
+            if(!ActingCombatant)
+            {
+                Apply(targetSquare);
+                return;
+            }
+
+            if(targetSquare != null)
+            {
+                List<Entity> entities = targetSquare.Entities;
+
+                foreach (Entity entity in entities)
+                {
+                    // if the action was intercepted
+                    if (entity.TryInterceptAction(this, ActingCombatant))
+                    {
+                        return;
+                    }
+                }
+            }
+
+            Apply(targetSquare);
+        }
 
         public List<GridSquare> FindTargetableSquares()
         {

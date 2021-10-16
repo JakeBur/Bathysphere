@@ -21,8 +21,9 @@ namespace Battle
 
         private Action OnStartTurn;
 
-        protected void Awake()
+        protected new void Awake()
         {
+            base.Awake();
             _statusEffects = new List<StatusEffect>();
         }
 
@@ -40,7 +41,7 @@ namespace Battle
         {
             if (battleAction.CanApplyToSquare(square))
             {
-                battleAction.Apply(square);
+                battleAction.TryApply(square);
 
                 // if we could do something, consume the event
                 context.ConsumeEvent();
@@ -119,7 +120,7 @@ namespace Battle
             int cost = combatantAction.CalculateCost(targetSquare);
             if(actionPoints.TryConsumePoints(cost))
             {
-                combatantAction.Apply(targetSquare);
+                combatantAction.TryApply(targetSquare);
                 return true;
             }
 

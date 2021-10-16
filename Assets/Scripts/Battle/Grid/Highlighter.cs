@@ -12,6 +12,7 @@ namespace Battle
         public HighlightSet pathHighlights;
         public HighlightSet playerAttackHighlights;
         public HighlightSet playerAttackGreyoutHighlights;
+        public HighlightSet playerBuffHighlights;
 
         private void Awake()
         {
