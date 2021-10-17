@@ -8,9 +8,9 @@ namespace Battle
     {
         public class Attack : EnemyAction
         {
-            public Attack(Combatant combatant, int cost) : base(combatant, cost)
+            public Attack(AICombatant aiCombatant, int cost) : base(aiCombatant, cost)
             {
-
+                _predicates.Add(new AIActionPredicate.SquareInRange(1));
             }
 
             public override void Apply(GridSquare targetSquare)
@@ -19,13 +19,17 @@ namespace Battle
                 {
                     (targetSquare.Entities.Find(entity => entity is PlayerCharacter) as PlayerCharacter).TakeDamage(1);
                     _enemy.EndTurn();
-
-                }, 3f);
+                }, 1f);
             }
 
             public override bool CanApplyToSquare(GridSquare targetSquare)
             {
-                return base.CanApplyToSquare(targetSquare) && targetSquare.Entities.Find(entity => entity is PlayerCharacter) && GridSquare.Distance(_enemy.Square, targetSquare) == 1;
+                return base.CanApplyToSquare(targetSquare) && targetSquare.Entities.Find(entity => entity is PlayerCharacter);
+            }
+
+            public override bool CanTargetSquare(GridSquare targetSquare)
+            {
+                return targetSquare.Entities.Find(entity => entity is PlayerCharacter) != null;
             }
 
             public override List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare targetSquare)

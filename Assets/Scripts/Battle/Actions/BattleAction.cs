@@ -35,7 +35,7 @@ namespace Battle
         /// This may be blocked by an ActionInterceptor.
         /// </summary>
         /// <param name="targetSquare">The square to apply the effect to.</param>
-        public virtual void TryApply(GridSquare targetSquare)
+        public virtual bool TryApply(GridSquare targetSquare)
         {
             if (targetSquare != null)
             {
@@ -46,12 +46,13 @@ namespace Battle
                     // if the action was intercepted
                     if (entity.TryInterceptAction(this, null))
                     {
-                        return;
+                        return false;
                     }
                 }
             }
 
             Apply(targetSquare);
+            return true;
         }
         
         /// <summary>

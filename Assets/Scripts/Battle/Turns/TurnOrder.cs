@@ -24,6 +24,11 @@ namespace Battle
         /// </summary>
         private List<ITurnOrderEntry> _turnOrder;
 
+        /// <summary>
+        /// True when a new turn should be started on the next update.
+        /// </summary>
+        protected bool _advanceTurn;
+
         public static ITurnOrderEntry CurrentEntry
         {
             get
@@ -37,6 +42,17 @@ namespace Battle
         {
             Instance = this;
             _turnOrder = new List<ITurnOrderEntry>();
+        }
+
+        private void Update()
+        {
+            if(_advanceTurn)
+            {
+                _advanceTurn = false;
+
+                _turnOrder[0].StartTurn();
+                OnTurnAdvance?.Invoke(_turnOrder[0]);
+            }
         }
 
         /// <summary>
@@ -113,18 +129,13 @@ namespace Battle
         /// </summary>
         private void AdvanceTurn()
         {
-            //Debug.Log("advancing turn");
-
             ITurnOrderEntry currentTurn = _turnOrder[0];
 
             // move the current entry to the end of the queue
             _turnOrder.RemoveAt(0);
             _turnOrder.Add(currentTurn);
 
-            // start the turn
-            _turnOrder[0].StartTurn();
-
-            OnTurnAdvance?.Invoke(_turnOrder[0]);
+            _advanceTurn = true;
         }
     }
 }

@@ -24,6 +24,18 @@ namespace Battle
         /// </summary>
         public int Width => squares.GetLength(0);
 
+        internal List<GridSquare> GetSquareList()
+        {
+            List<GridSquare> squareList = new List<GridSquare>();
+
+            foreach (GridSquare square in squares)
+            {
+                squareList.Add(square);
+            }
+
+            return squareList;
+        }
+
         /// <summary>
         /// Height, in squares, of this BattleGrid.
         /// </summary>
@@ -135,9 +147,9 @@ namespace Battle
         /// <summary>
         /// Uses A* to find the shortest unblocked path between start and goal.
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="goal"></param>
-        /// <returns></returns>
+        /// <param name="start">The starting GridSquare.</param>
+        /// <param name="goal">The destination GridSquare.</param>
+        /// <returns>A list with the path to get from start to goal, or null if no path was found.</returns>
         public List<GridSquare> CalculatePath(GridSquare start, GridSquare goal)
         {
             if (!Contains(start))

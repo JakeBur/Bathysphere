@@ -9,6 +9,10 @@ namespace Battle
     /// </summary>
     public interface IDamageable
     {
+        /// <summary>
+        /// Takes the given amount of damage.
+        /// </summary>
+        /// <param name="damage">The damage to take.</param>
         void TakeDamage(int damage);
     }
 }

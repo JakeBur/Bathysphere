@@ -63,9 +63,8 @@ namespace Battle
             InitializeComboActions();
         }
 
-        protected new void Start()
+        protected void Start()
         {
-            base.Start();
             BattleInputManager.Instance.OnCancelPressed += Cancel;
         }
 
@@ -132,7 +131,7 @@ namespace Battle
             {
                 if(action.CanApplyToSquare(null))
                 {
-                    ApplyAction(action, null);
+                    TryApplyAction(action, null);
                 }
             }
             else
@@ -175,9 +174,9 @@ namespace Battle
             PrimedAction = null;
         }
 
-        public override bool ApplyAction(CombatantAction combatantAction, GridSquare targetSquare)
+        public override bool TryApplyAction(CombatantAction combatantAction, GridSquare targetSquare)
         {
-            bool success = base.ApplyAction(combatantAction, targetSquare);
+            bool success = base.TryApplyAction(combatantAction, targetSquare);
 
             PrimedAction = PrimedAction;
 
@@ -195,7 +194,7 @@ namespace Battle
 
             if (PrimedAction.CanApplyToSquare(square))
             {
-                ApplyAction(PrimedAction, square);
+                TryApplyAction(PrimedAction, square);
                 PrimedAction = null;
 
                 // if we could do something, consume the event
