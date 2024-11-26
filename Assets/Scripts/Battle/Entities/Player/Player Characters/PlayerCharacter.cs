@@ -270,6 +270,16 @@ namespace Battle
             {
                 return new List<GridSquare>();
             }
+
+            public override string GetDisplayName()
+            {
+                return "Move";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Move to the selected square";
+            }
         }
     }
 }

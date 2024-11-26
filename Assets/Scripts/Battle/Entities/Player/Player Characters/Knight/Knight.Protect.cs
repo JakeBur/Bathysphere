@@ -62,6 +62,16 @@ namespace Battle
             {
                 return new List<GridSquare>();
             }
+
+            public override string GetDisplayName()
+            {
+                return "Protect";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Protect Description";
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Battle
             [SerializeField]
             public GameObject _swordPrefab;
 
+
             public RecoverSword(Knight knight, int cost) : base(knight, cost)
             {
                 IsInstant = true;
@@ -61,6 +62,16 @@ namespace Battle
             public override void UpdatePreview(GridSquare gridSquare)
             {
 
+            }
+
+            public override string GetDisplayName()
+            {
+                return "Recover Sword";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Recover Sword Description";
             }
         }
     }

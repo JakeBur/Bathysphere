@@ -16,6 +16,7 @@ namespace Battle
         /// <summary>
         /// Invoked when a new ISelectable is selected.
         /// Supplies the newly selected ISelectable as an argument.
+        /// TODO: Ensure this is only called when selected CHANGES
         /// </summary>
         public Action<ISelectable> OnSelect;
 

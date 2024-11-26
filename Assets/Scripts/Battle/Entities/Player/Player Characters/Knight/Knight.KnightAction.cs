@@ -1,15 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Battle;
 using UnityEngine;
-using System.Linq;
-using System;
 
 namespace Battle
 {
     public partial class Knight
     {
-        [Serializable]
-        protected abstract class KnightAction : PlayerAction
+        public abstract class KnightAction : PlayerAction
         {
             protected Knight _knight;
 
@@ -20,3 +18,5 @@ namespace Battle
         }
     }
 }
+
+

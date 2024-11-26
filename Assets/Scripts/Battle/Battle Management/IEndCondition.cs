@@ -7,7 +7,7 @@ namespace Battle
     /// <summary>
     /// Parent class for victory/defeat conditions for battles.
     /// </summary>
-    public abstract class EndCondition
+    public interface IEndCondition
     {
         /// <summary>
         /// Checks whether the conditions described by this EndCondition are met.

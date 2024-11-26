@@ -18,8 +18,6 @@ namespace Battle
         protected new void Awake()
         {
             base.Awake();
-
-            
         }
 
         private void Start()

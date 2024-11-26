@@ -33,7 +33,6 @@ namespace Battle
 
         private void Awake()
         {
-
             if (Application.isPlaying)
             {
                 CleanScene();

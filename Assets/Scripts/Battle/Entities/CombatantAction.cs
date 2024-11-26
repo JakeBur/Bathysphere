@@ -12,6 +12,9 @@ namespace Battle
 
         protected Combatant _combatant;
 
+        public abstract string GetDisplayName();
+        public abstract string GetDisplayDescription();
+
         public CombatantAction(Combatant combatant, int cost)
         {
             _combatant = combatant;

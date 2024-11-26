@@ -82,6 +82,16 @@ namespace Battle
             {
                 return true;
             }
+
+            public override string GetDisplayName()
+            {
+                return "Shove";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "I FORGOT HOW I USE THIS :(";
+            }
         }
     }
 }

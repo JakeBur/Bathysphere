@@ -8,9 +8,9 @@ namespace Battle
     /// <summary>
     /// Battle end condition that requires all player characters to be defeated.
     /// </summary>
-    public class AllPlayersDefeated : EndCondition
+    public class AllPlayersDefeated : IEndCondition
     {
-        public override bool Met(BattleManager battleManager)
+        public bool Met(BattleManager battleManager)
         {
             return battleManager.entities.Where(entity => entity is PlayerCharacter).ToList().Count == 0;
         }

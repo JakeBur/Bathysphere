@@ -73,6 +73,16 @@ namespace Battle
             {
 
             }
+
+            public override string GetDisplayName()
+            {
+                return "Depressurize";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Depressurize Description";
+            }
         }
     }
 }

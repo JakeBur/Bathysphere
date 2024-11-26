@@ -12,7 +12,6 @@ namespace Battle
         protected class Vault : KnightAction
         {
             private int _range;
-            //public override bool IsInstant() => false;
 
             public Vault(Knight knight, int cost, int range) : base(knight, cost)
             {
@@ -114,6 +113,16 @@ namespace Battle
                 squares.Add(gridSquare);
 
                 return squares;
+            }
+
+            public override string GetDisplayName()
+            {
+                return "Vault";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Vault Description";
             }
         }
     }

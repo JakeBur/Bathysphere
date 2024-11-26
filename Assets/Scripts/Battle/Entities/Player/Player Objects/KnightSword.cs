@@ -89,6 +89,16 @@ namespace Battle
                 return squares;
             }
 
+            public override string GetDisplayDescription()
+            {
+                return $"Test Action Description";
+            }
+
+            public override string GetDisplayName()
+            {
+                return "Test Action";
+            }
+
             public override void UpdatePreview(GridSquare gridSquare)
             {
                 throw new System.NotImplementedException();

@@ -9,7 +9,7 @@ namespace Battle
     public partial class Knight
     {
         [Serializable]
-        protected class Counterattack : KnightAction
+        protected class Counterattack : PlayerAction
         {
             private int _damage;
 
@@ -53,6 +53,16 @@ namespace Battle
             public override List<GridSquare> FindThreatenedSquaresAtTarget(GridSquare gridSquare)
             {
                 return new List<GridSquare>();
+            }
+
+            public override string GetDisplayName()
+            {
+                return "Counterattack";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Inturrupts enemy attack and does 2 damage";
             }
         }
     }

@@ -90,6 +90,16 @@ namespace Battle
                     Highlighter.Instance.playerAttackHighlights.Highlight(FindThreatenedSquaresAtTarget(gridSquare));
                 }
             }
+
+            public override string GetDisplayName()
+            {
+                return "Throw Sword";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Throw Sword Description";
+            }
         }
     }
 }

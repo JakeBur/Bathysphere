@@ -36,6 +36,16 @@ namespace Battle
             {
                 return new List<GridSquare>();
             }
+
+            public override string GetDisplayDescription()
+            {
+                return $"Does 1 damage to target";
+            }
+
+            public override string GetDisplayName()
+            {
+                return "Attack";
+            }
         }
     }
 }

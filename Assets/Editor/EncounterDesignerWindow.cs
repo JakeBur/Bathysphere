@@ -94,7 +94,7 @@ public class EncounterDesignerWindow : EditorWindow
     {
         FindAllEncounters(out encounters);
         encounterList.itemsSource = encounters;
-        encounterList.Refresh();
+        encounterList.Rebuild();
     }
 
     /// <summary>
@@ -197,7 +197,7 @@ public class EncounterDesignerWindow : EditorWindow
                 }
             });
 
-        encounterList.Refresh();
+        encounterList.Rebuild();
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public class EncounterDesignerWindow : EditorWindow
         entityDataList.itemHeight = 16;
         entityDataList.selectionType = SelectionType.Single;
 
-        entityDataList.Refresh();
+        entityDataList.Rebuild();
     }
 
     /// <summary>
@@ -266,11 +266,11 @@ public class EncounterDesignerWindow : EditorWindow
         entityList.itemHeight = 32;
         entityList.selectionType = SelectionType.Single;
 
-        entityList.Refresh();
+        entityList.Rebuild();
 
         // refresh the list whenever the encounter's elements change
-        encounter.OnContentsUpdated -= entityList.Refresh;// make sure we only subscribe once
-        encounter.OnContentsUpdated += entityList.Refresh;
+        encounter.OnContentsUpdated -= entityList.Rebuild;// make sure we only subscribe once
+        encounter.OnContentsUpdated += entityList.Rebuild;
 
         // Open encounter button
         Button openEncounterButton = rootVisualElement.Query<Button>("encounter-designer-button").First();

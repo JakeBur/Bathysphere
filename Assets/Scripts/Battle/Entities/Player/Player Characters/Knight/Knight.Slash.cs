@@ -96,6 +96,16 @@ namespace Battle
 
                 return squares;
             }
+
+            public override string GetDisplayName()
+            {
+                return "Slash";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Slash description";
+            }
         }
     }
 }

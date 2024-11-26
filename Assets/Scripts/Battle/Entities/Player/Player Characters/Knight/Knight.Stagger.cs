@@ -82,6 +82,16 @@ namespace Battle
                 
                 return squares;
             }
+
+            public override string GetDisplayName()
+            {
+                return "Stagger";
+            }
+
+            public override string GetDisplayDescription()
+            {
+                return "Stagger Description";
+            }
         }
     }
 }

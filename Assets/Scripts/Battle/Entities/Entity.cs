@@ -110,5 +110,10 @@ namespace Battle
 
             return false;
         }
+
+        public bool HasGameObject()
+        {
+            return true;// we inherit from MonoBehavior
+        }
     }
 }

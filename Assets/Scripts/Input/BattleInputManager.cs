@@ -52,7 +52,7 @@ namespace Battle
         }
 
         /// <summary>
-        /// Handler for when the player clicks the mouse.
+        /// Calls click action for all clickables currently hovered.
         /// </summary>
         /// <param name="context">Context supplied by the Unity Input System.</param>
         private void HandleClick(InputAction.CallbackContext context)
@@ -66,7 +66,7 @@ namespace Battle
         /// <summary>
         /// Gets an array of all clickables on the object currently hovered over by the mouse.
         /// </summary>
-        /// <returns>An array of IClickables currently hovered over by the player's mouse.</returns>
+        /// <returns>An array of IClickables currently hovered over by the player's mouse. Can be empty.</returns>
         private IClickable[] GetHoveredClickables()
         {
             Vector2 screenPoint = Mouse.current.position.ReadValue();
@@ -82,6 +82,10 @@ namespace Battle
             }
         }
 
+        /// <summary>
+        /// Gets the grid square currently under the cursor.
+        /// </summary>
+        /// <returns>The hovered grid square, or null if none is found.</returns>
         private GridSquare GetHoveredGridSqaure()
         {
             Vector2 screenPoint = Mouse.current.position.ReadValue();

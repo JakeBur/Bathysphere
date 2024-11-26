@@ -25,6 +25,7 @@ namespace Battle
         public List<PlayerAction> GetAvailableComboActions(Entity entity);
 
         bool IsSelectable();
+        bool HasGameObject();
     }
 
     public static class SelectableExtentions
