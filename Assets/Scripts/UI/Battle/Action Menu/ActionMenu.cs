@@ -51,31 +51,40 @@ namespace Battle
         /// <param name="selectable">The selectable to use as a basis for action menu state</param>
         private void HandleSelect(ISelectable selectable)
         {
-            //clear list of buttons
-            buttons.ForEach(button => button.Shutdown());
-            buttons.Clear();
-            
+            ClearButtons();
+
             if (!selectable.HasGameObject()) return;
 
             transform.position = selectable.TryGetGameObject().transform.position;
 
             ITurnOrderEntry currentTurnOrderEntry = TurnOrder.CurrentEntry;
-            PlayerCharacter playerCharacter = currentTurnOrderEntry as PlayerCharacter;
 
-            if(playerCharacter)
+            if (currentTurnOrderEntry is PlayerCharacter)
             {
-                foreach (PlayerAction playerAction in selectable.GetAvailableMenuActions())
-                {
-                    buttons.Add(new ActionMenuButton(playerCharacter, playerAction, this));
-                }
-
-                foreach(PlayerAction playerAction in playerCharacter.GetAvailableComboActions(selectable as Entity))
-                {
-                    buttons.Add(new ActionMenuButton(playerCharacter, playerAction, this));
-                }
+                PlayerCharacter playerCharacter = currentTurnOrderEntry as PlayerCharacter;
+                CreateButtons(selectable, playerCharacter);
             }
 
             canvas.gameObject.SetActive(buttons.Count > 0);
+        }
+
+        private void CreateButtons(ISelectable selectable, PlayerCharacter playerCharacter)
+        {
+            foreach (PlayerAction playerAction in selectable.GetAvailableMenuActions())
+            {
+                buttons.Add(new ActionMenuButton(playerCharacter, playerAction, this));
+            }
+
+            foreach (PlayerAction playerAction in playerCharacter.GetAvailableComboActions(selectable as Entity))
+            {
+                buttons.Add(new ActionMenuButton(playerCharacter, playerAction, this));
+            }
+        }
+
+        private void ClearButtons()
+        {
+            buttons.ForEach(button => button.Shutdown());
+            buttons.Clear();
         }
 
         private void SetHoveredButton(ActionMenuButton actionMenuButton)
