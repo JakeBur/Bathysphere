@@ -66,6 +66,7 @@ namespace Battle
         protected void Start()
         {
             BattleInputManager.Instance.OnCancelPressed += Cancel;
+            UIButtonListener.Instance.OnEndTurn += EndTurn;
         }
 
         protected abstract void InitializeMenuActions();
